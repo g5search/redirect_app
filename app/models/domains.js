@@ -14,7 +14,8 @@ module.exports = function(sequelize, Sequelize) {
         }
  
     });
- 
+    domains.associate = function(models) {
+        models.domain.hasMany(models.redirect, { foreignKey: 'domain_id', sourceKey: 'id' });
+    }
     return domains;
- 
 }

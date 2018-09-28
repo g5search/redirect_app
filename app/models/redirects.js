@@ -9,7 +9,7 @@ module.exports = function (sequelize, Sequelize) {
         },
 
         domain_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             notEmpty: true
         },
 
