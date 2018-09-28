@@ -23,13 +23,24 @@ async function redirectApp(req, res) {
     var protocol = req.protocol
     console.log('vhost for', req.headers.host);
     // query the database for the url and its destination
-    var redirect = await getRedirect(protocol, domain, path) 
+    var redirect = await getRedirect(protocol, domain, path)
     res.redirect(redirect)
-    
-  }
+}
 
 async function getRedirect(protocol, domain, path) {
-// look for domain and path 
-
-// if the domain is found but there is no path just upgrade the protocol to https
+    // look for domain and path 
+    var redirect = await models.domain.findAll({
+        where: {
+            domain: domain
+        },
+        include: [
+            {
+                model: models.redirect,
+                where: {
+                    path: path
+                }
+            }
+        ]
+    })
+    // if the domain is found but there is no path just upgrade the protocol to https
 }
