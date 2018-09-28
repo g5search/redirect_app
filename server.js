@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3000
-
+var models = require("./app/models");
 
 // respond to any GET request 
 app.get('*', redirectApp)
