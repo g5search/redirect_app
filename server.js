@@ -11,7 +11,10 @@ var glx = require('greenlock-express').create({
     , configDir: '~/.config/acme/'                              // You MUST have access to write to directory where certs
     // are saved. ex: /home/foouser/.config/acme
 
-    , approveDomains: myApproveDomains                          // Greenlock's wraps around tls.SNICallback. Check the
+    , approveDomains: function(opts, certs, cb) {
+        myApproveDomains(opts, certs, cb)
+    }
+                       // Greenlock's wraps around tls.SNICallback. Check the
     // domain name here and reject invalid ones
 
     , app: redirectApp                                           // Any node-style http app (i.e. express, koa, hapi, rill)
@@ -37,55 +40,11 @@ server.on('listening', function () {
 // but it's up to you to make sure that you accept opts.domain BEFORE
 // an attempt is made to issue a certificate for it.
 function myApproveDomains(opts, certs, cb) {
+    console.log(opts.domain)
+    // add domains sould be listed on this cert
+    opts.domains = []
 
-    // In this example the filesystem is our "database".
-    // We check in /srv/www/ for opts.domain (i.e. "example.com") and only proceed if it exists.
-    console.log('opts.domain');
-    console.log('opts.domain');
-    console.log('opts.domain');
-    console.log(opts.domain);
-    console.log('opts.domain');
-    console.log('opts.domain');
-
-    // check that the domain is in the database
-    // let domain  = await models.domain.findAll({
-    //     where: {
-    //         domain: opts.domain
-    //     }
-    // })
-
-    // if (domain.length < 1 ) {
-        
-    // }
-
-    // Check that the hosting domain exists on the file system.
-    var hostdir = path.join(srv, opts.domain);
-    fs.readdir(hostdir, function (err, nodes) {
-        var e;
-        if (err || !nodes) {
-            e = new Error("rejecting '" + opts.domains[0] + "' because '" + hostdir + "' could not be read");
-            console.error(e);
-            console.error(err);
-            cb(e);
-            return;
-        }
-
-        // You could put a variety of configuration details alongside the vhost folder
-        // For example, /srv/www/example.com.json could describe the following:
-
-        // If you have multiple domains grouped together, you can list them on the same certificate
-        // opts.domains = [ 'example.com', 'www.example.com', 'api.example.com', 'sso.example.com' ]
-
-        // You can also change other options on-the-fly
-        // (approveDomains is called after the in-memory certificates cache is checked, but before any ACME requests)
-
-        // opts.email = "jon@example.com"
-        // opts.agreeTos = true;
-        // opts.challengeType = 'http-01';
-        // opts.challenge = require('le-challenge-fs').create({});
-        cb(null, { options: opts, certs: certs });
-    });
-
+    cb(null, {options: opts, certs: certs})
 }
 
 // [SECURITY]
