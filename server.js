@@ -51,15 +51,15 @@ function myApproveDomains(opts, certs, cb) {
     console.log('opts.domain');
 
     // check that the domain is in the database
-    let domain  = await models.domain.findAll({
-        where: {
-            domain: opts.domain
-        }
-    })
+    // let domain  = await models.domain.findAll({
+    //     where: {
+    //         domain: opts.domain
+    //     }
+    // })
 
-    if (domain.length < 1 ) {
+    // if (domain.length < 1 ) {
         
-    }
+    // }
 
     // Check that the hosting domain exists on the file system.
     var hostdir = path.join(srv, opts.domain);
