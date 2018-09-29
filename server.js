@@ -42,7 +42,7 @@ server.on('listening', function () {
 function myApproveDomains(opts, certs, cb) {
     console.log(opts.domain)
     // add domains sould be listed on this cert
-    opts.domains = []
+    opts.domains = ['redirect.tylerhasenoehrl.com']
 
     cb(null, {options: opts, certs: certs})
 }
