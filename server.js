@@ -1,6 +1,3 @@
-const express = require('express')
-const app = express()
-const port = 3000
 var models = require("./app/models");
 require('dotenv').config()
 
@@ -105,8 +102,6 @@ models.sequelize.sync().then(function () {
 }).catch(function (err) {
     console.log(err, "Something went wrong with the Database Update!")
 });
-
-app.listen(port, () => console.log(`redirect app listening on port ${port}!`))
 
 async function redirectApp(req, res) {
     var path = req.path
