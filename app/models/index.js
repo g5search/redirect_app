@@ -2,6 +2,7 @@
 var fs = require("fs");
 var path = require("path");
 const Sequelize = require("sequelize");
+console.log(process.env.DATABASE_URL)
 var sequelize = new Sequelize(process.env.DATABASE_URL, {
   pool: {
     max: process.env.DATABASE_MAX_CONNECTIONS,
