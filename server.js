@@ -5,8 +5,8 @@ var glx = require('greenlock-express').create({
 
     version: 'draft-11'                                       // Let's Encrypt v2 is ACME draft 11
 
-    , server: 'https://acme-v02.api.letsencrypt.org/directory'  // If at first you don't succeed, stop and switch to staging
-    // https://acme-staging-v02.api.letsencrypt.org/directory
+    // , server: 'https://acme-v02.api.letsencrypt.org/directory'  // If at first you don't succeed, stop and switch to staging
+    , server: 'https://acme-staging-v02.api.letsencrypt.org/directory'
 
     , configDir: '~/.config/acme/'                              // You MUST have access to write to directory where certs
     // are saved. ex: /home/foouser/.config/acme
