@@ -1,6 +1,5 @@
-var models = require("./app/models");
 require('dotenv').config()
-
+var models = require("./app/models");
 
 var glx = require('greenlock-express').create({
 
@@ -88,6 +87,93 @@ function myApproveDomains(opts, certs, cb) {
 
 }
 
+// [SECURITY]
+// Since v2.4.0+ Greenlock Express will proactively protect against
+// SQL injection and timing attacks by rejecting invalid domain names
+// in Host headers.
+// It will also make them lowercase and protect against "domain fronting".
+// However, it's up to you to make sure you actually have a domain to serve :)
+
+//Sync Database
+models.sequelize.sync().then(function () {
+    console.log('Nice! Database looks fine')
+
+}).catch(function (err) {
+    console.log(err, "Something went wrong with the Database Update!")
+});
+
+async function redirectApp(req, res) {
+    var path = req.path
+    var host = req.headers.host
+    var protocol = req.protocol
+    console.log('vhost for', req.headers.host);
+    // query the database for the url and its destination
+    var redirect = await getRedirect(protocol, host, path)
+    if ('destination' in redirect) {
+        res.redirect(redirect.destination)
+    } else {
+        // send error
+        res.send(redirect.error)
+    }
+}
+
+async function getRedirect(protocol, host, path) {
+    // look for domain and path 
+    var domain = await models.domain.findAll({
+        where: {
+            domain: host
+        },
+        include: [
+            {
+                model: models.redirect,
+                where: {
+                    path: path
+                }
+            }
+        ]
+    })
+    if (domain.length === 1) {
+        return await formatRedirect(domain[0])
+    } else if (domain.length > 1) {
+        // we have something strange going on
+        return { error: 'multiple domains have been found' }
+    } else {
+        // check if there is a domain in the database if it is upgrade the request to https and redirect to the www
+        let domainCount = await getDomain(host)
+        if (domainCount > 0) {
+            return { destination: 'https://' + host + path }
+        } else {
+            return { error: 'There is no redirect for this domain' }
+        }
+    }
+}
+async function getDomain(domain) {
+    return models.domain.count({
+        where: {
+            domain: domain
+        }
+    })
+}
+async function formatRedirect(domain) {
+    if (domain.redirects.length > 1) {
+        // there is more than one redirect for the domain and path
+        return { error: 'more than one redirect for this host and path' }
+    } else if (domain.redirects.length === 1) {
+        var redirect = domain.redirects[0]
+        // there is only one redirect for this domain and path
+        let destination = redirect.destination
+        let protocol = null
+        if (redirect.secure_destination === true) {
+            destination = 'https://' + destination
+        } else {
+            destination = 'http://' + destination
+        }
+        return { destination }
+    } else {
+        // there is no redirect for this 
+        return { error: 'There is no redirect for this domain' }
+    }
+}
 // [SECURITY]
 // Since v2.4.0+ Greenlock Express will proactively protect against
 // SQL injection and timing attacks by rejecting invalid domain names
