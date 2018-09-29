@@ -11,9 +11,7 @@ var glx = require('greenlock-express').create({
     , configDir: '~/.config/acme/'                              // You MUST have access to write to directory where certs
     // are saved. ex: /home/foouser/.config/acme
 
-    , approveDomains: function(opts, certs, cb) {
-        myApproveDomains(opts, certs, cb)
-    }
+    , approveDomains: ['redirect.tylerhasenoehrl.com']
                        // Greenlock's wraps around tls.SNICallback. Check the
     // domain name here and reject invalid ones
 
