@@ -60,7 +60,7 @@ async function getRedirect(protocol, host, path) {
             ]
         })
         console.log(wildcards.length)
-        if (wildcards.length > 0 ) {
+        if (wildcards.length > 0) {
             console.log('wildcards found')
             // itterate through the wildcard redirects looking for one with a partial string match with the path
             for (i = 0; i < wildcards[0].redirects.length; i++) {
@@ -68,20 +68,28 @@ async function getRedirect(protocol, host, path) {
                 if (path.indexOf(redirect_path) >= 0) {
                     return await formatRedirect({
                         domain: wildcards[0].domain,
-                        redirects:[
+                        redirects: [
                             redirects[i]
                         ]
                     })
                 }
             }
         } else {
-            // check if it is a subdomain and if it is not forward to www maintinaing the page path
-        }
-
-        if (currentURL === newURL) {
-            return { error: 'this site is not configured correctly - causing a redirect loop' }
-        } else {
-            return { destination: newURL }
+            // check root domain is the same as the host
+            var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
+            newURL = 'http://www.' + host + path
+            if (rootdomain === host) {
+                // add WWW and forward
+                if (newURL !== currentURL) {
+                    return { destination: 'http://www.' + host + path }
+                } else {
+                    // a redirect loop is going to happen
+                    return { error: 'CNAME incorrectly pointed' }
+                }
+            } else {
+                // return error because this is a subdomain and we will not handle forwarding for it
+                return { error: 'subdomain is not pointed correctly' }
+            }
         }
     }
 }
