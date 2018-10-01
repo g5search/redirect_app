@@ -20,6 +20,9 @@ async function redirect(req, res) {
 }
 
 async function getRedirect(protocol, host, path) {
+    var currentURL = protocol + '://' + host + path
+    var newURL = 'https://' + host + path
+    console.log()
     // look for domain and path 
     var domain = await models.domain.findAll({
         where: {
@@ -40,9 +43,33 @@ async function getRedirect(protocol, host, path) {
         // we have something strange going on
         return { error: 'multiple domains have been found' }
     } else {
-        var currentURL = protocol + '://' + host + path
-        var newURL = 'https://' + host + path
-
+        // look for all wildcard redirects for this domain and find the first one that matches
+        console.log('looking for wildcards')
+        let wildcards = await models.domain.findAll({
+            where: {
+                domain: host
+            },
+            include: [
+                {
+                    model: models.redirect,
+                    where: {
+                        wildcard: true
+                    }
+                }
+            ]
+        })
+        console.log(wildcards.length)
+        if (wildcards.length > 0 ) {
+            console.log('wildcards found')
+            // itterate through the wildcard redirects looking for one with a partial string match with the path
+            for (i = 0; i < wildcards[0].redirects.length; i++) {
+                let redirect_path = wildcards[0].redirects[i].path
+                if (path.indexOf(redirect_path) >= 0) {
+                    newURL = 'https://' + wildcards[0].redirects[i].destination
+                    break
+                }
+            }
+        } 
         console.log(currentURL)
         console.log(newURL)
 

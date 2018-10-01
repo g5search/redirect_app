@@ -25,6 +25,11 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.BOOLEAN,
             allowNull: false,
             defaultValue: true
+        },
+        wildcard: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         }
     });
 
