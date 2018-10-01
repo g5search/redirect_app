@@ -9,6 +9,8 @@ async function redirect(req, res) {
     var path = req.path
     var host = req.headers.host
     var protocol = req.protocol
+    console.log(host)
+    console.log(hostname)
     // query the database for the url and its destination
     var redirect = await getRedirect(protocol, host, path)
     if ('destination' in redirect) {
@@ -38,7 +40,6 @@ async function getRedirect(protocol, host, path) {
         ]
     })
     if (domain.length === 1) {
-        return await formatRedirect(domain[0])
     } else if (domain.length > 1) {
         // we have something strange going on
         return { error: 'multiple domains have been found' }
@@ -65,13 +66,17 @@ async function getRedirect(protocol, host, path) {
             for (i = 0; i < wildcards[0].redirects.length; i++) {
                 let redirect_path = wildcards[0].redirects[i].path
                 if (path.indexOf(redirect_path) >= 0) {
-                    newURL = 'https://' + wildcards[0].redirects[i].destination
-                    break
+                    return await formatRedirect({
+                        domain: wildcards[0].domain,
+                        redirects:[
+                            redirects[i]
+                        ]
+                    })
                 }
             }
-        } 
-        console.log(currentURL)
-        console.log(newURL)
+        } else {
+            // check if it is a subdomain and if it is not forward to www maintinaing the page path
+        }
 
         if (currentURL === newURL) {
             return { error: 'this site is not configured correctly - causing a redirect loop' }
@@ -83,7 +88,7 @@ async function getRedirect(protocol, host, path) {
 
 async function formatRedirect(domain) {
     if (domain.redirects.length > 1) {
-        // there is more than one redirect for the domain and path
+        // there is more than one redirect for the domain and path this should never happen unless the DB is manually edited
         return { error: 'more than one redirect for this host and path' }
     } else if (domain.redirects.length === 1) {
         var redirect = domain.redirects[0]
@@ -97,7 +102,7 @@ async function formatRedirect(domain) {
         }
         return { destination }
     } else {
-        // there is no redirect for this 
+        // there is no redirect for this - this code is probably unreachable
         return { error: 'There is no redirect for this domain' }
     }
 }
