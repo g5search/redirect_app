@@ -7,14 +7,19 @@ app.get('*', redirect)
 
 async function redirect(req, res) {
     var path = req.path
-    var host = req.headers.host
+    var host = req.hostname
     var protocol = req.protocol
     console.log(host)
-    console.log(hostname)
+    console.log(req.hostname)
     // query the database for the url and its destination
     var redirect = await getRedirect(protocol, host, path)
     if ('destination' in redirect) {
-        res.redirect(redirect.destination)
+        // check for redirect loop
+        if (redirect.destination !== protocol + host + path) {
+            res.redirect(redirect.destination)
+        } else {
+            res.send('Domain is incorrectly pointed')
+        }
     } else {
         // send error
         res.send(redirect.error)
@@ -40,6 +45,7 @@ async function getRedirect(protocol, host, path) {
         ]
     })
     if (domain.length === 1) {
+        return await formatRedirect(domain[0])
     } else if (domain.length > 1) {
         // we have something strange going on
         return { error: 'multiple domains have been found' }
@@ -69,31 +75,29 @@ async function getRedirect(protocol, host, path) {
                     return await formatRedirect({
                         domain: wildcards[0].domain,
                         redirects: [
-                            redirects[i]
+                            wildcards[0].redirects[i]
                         ]
                     })
                 }
             }
+        }
+        // check root domain is the same as the host
+        var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
+        newURL = 'http://www.' + host + path
+        console.log(rootdomain[0])
+        console.log(host)
+        if (rootdomain[0] === host) {
+            // add WWW and forward
+            return { destination: 'http://www.' + host + path }
         } else {
-            // check root domain is the same as the host
-            var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
-            newURL = 'http://www.' + host + path
-            if (rootdomain === host) {
-                // add WWW and forward
-                if (newURL !== currentURL) {
-                    return { destination: 'http://www.' + host + path }
-                } else {
-                    // a redirect loop is going to happen
-                    return { error: 'CNAME incorrectly pointed' }
-                }
-            } else {
-                // return error because this is a subdomain and we will not handle forwarding for it
-                return { error: 'subdomain is not pointed correctly' }
-            }
+            // return error because this is a subdomain and we will not handle forwarding for it
+            return { error: 'subdomain is not pointed correctly' }
         }
     }
 }
+function forwardRequest() {
 
+}
 async function formatRedirect(domain) {
     if (domain.redirects.length > 1) {
         // there is more than one redirect for the domain and path this should never happen unless the DB is manually edited
