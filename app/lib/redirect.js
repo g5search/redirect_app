@@ -1,7 +1,10 @@
 var express = require('express')
 var app = express()
 var models = require('../models')
+var helmet = require('helmet')
 module.exports = app
+// disable for security 
+app.use(helmet())
 
 // repond to all GET requests
 app.get('*', redirect)
