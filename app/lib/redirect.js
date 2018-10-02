@@ -45,10 +45,11 @@ async function getRedirect(protocol, host, path) {
 function forward(host) {
     // check root domain is the same as the host
     var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
+    // forward to http:// incase a site went live without an SSL attached
     newURL = 'http://www.' + host + path
     if (rootdomain[0] === host) {
         // add WWW and forward
-        return { destination: 'http://www.' + host + path }
+        return { destination: newURL }
     } else {
         // return error because this is a subdomain and we will not handle forwarding for it
         return { error: 'subdomain is not pointed correctly' }
@@ -85,7 +86,8 @@ function findWildcards(host) {
                     wildcard: true
                 }
             }
-        ]
+        ],
+        order: [['updatedAt', 'DESC']]
     }).then(wildcards => {
         if (wildcards.length > 0) {
             // itterate through the wildcard redirects looking for one with a partial string match with the path
