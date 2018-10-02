@@ -47,25 +47,12 @@ async function getRedirect(protocol, host, path) {
     if (domain.length === 1) {
         return await formatRedirect(domain[0])
     } else if (domain.length > 1) {
-        // we have something strange going on
+        // the database is not right
         return { error: 'multiple domains have been found' }
     } else {
         // look for all wildcard redirects for this domain and find the first one that matches
         console.log('looking for wildcards')
-        let wildcards = await models.domain.findAll({
-            where: {
-                domain: host
-            },
-            include: [
-                {
-                    model: models.redirect,
-                    where: {
-                        wildcard: true
-                    }
-                }
-            ]
-        })
-        console.log(wildcards.length)
+        let wildcards = await findWildcards(host)
         if (wildcards.length > 0) {
             console.log('wildcards found')
             // itterate through the wildcard redirects looking for one with a partial string match with the path
@@ -95,18 +82,14 @@ async function getRedirect(protocol, host, path) {
         }
     }
 }
-function forwardRequest() {
-
-}
 async function formatRedirect(domain) {
     if (domain.redirects.length > 1) {
         // there is more than one redirect for the domain and path this should never happen unless the DB is manually edited
-        return { error: 'more than one redirect for this host and path' }
+        return { error: 'more than one redirect for this domain and path' }
     } else if (domain.redirects.length === 1) {
         var redirect = domain.redirects[0]
         // there is only one redirect for this domain and path
         let destination = redirect.destination
-        let protocol = null
         if (redirect.secure_destination === true) {
             destination = 'https://' + destination
         } else {
@@ -117,4 +100,19 @@ async function formatRedirect(domain) {
         // there is no redirect for this - this code is probably unreachable
         return { error: 'There is no redirect for this domain' }
     }
+}
+function findWildcards(host) {
+    return models.domain.findAll({
+        where: {
+            domain: host
+        },
+        include: [
+            {
+                model: models.redirect,
+                where: {
+                    wildcard: true
+                }
+            }
+        ]
+    })
 }
