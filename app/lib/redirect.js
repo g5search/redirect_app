@@ -39,8 +39,10 @@ async function getRedirect(protocol, host, path) {
         // look for all wildcard redirects for this domain and find the first one that matches
         let wildcards = await findWildcards(host)
         if (wildcards !== null) {
+            console.log('wildcards')
             return wildcards
         } else {
+            console.log('forward')
             return forward(host)
         }
     }
@@ -92,10 +94,13 @@ function findWildcards(host) {
         ],
         order: [['updatedAt', 'DESC']]
     }).then(wildcards => {
+        console.log(wildcards)
         if (wildcards.length > 0) {
             // itterate through the wildcard redirects looking for one with a partial string match with the path
             for (i = 0; i < wildcards[0].redirects.length; i++) {
                 let redirect_path = wildcards[0].redirects[i].path
+                console.log(path)
+                console.log(redirect)
                 if (path.indexOf(redirect_path) >= 0) {
                     return formatRedirect({
                         domain: wildcards[0].domain,
