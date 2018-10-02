@@ -74,7 +74,7 @@ function formatRedirect(domain) {
         return { error: 'There is no redirect for this domain' }
     }
 }
-function findWildcards(host) {
+async function findWildcards(host) {
     return models.domain.findAll({
         where: {
             domain: host
