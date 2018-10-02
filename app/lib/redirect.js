@@ -15,7 +15,7 @@ async function redirect(req, res) {
     if ('destination' in redirect) {
         // check for redirect loop
         if (redirect.destination !== protocol + host + path) {
-            res.redirect(redirect.destination)
+            res.redirect(301,redirect.destination)
         } else {
             res.send('Domain is incorrectly pointed')
         }
