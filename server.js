@@ -1,7 +1,7 @@
 require('dotenv').config()
 var models = require('./app/models')
 
-//Sync Database
+//Sync the Database
 models.sequelize.sync().then(function () {
   console.log('Nice! Database looks fine')
 }).catch(function (err) {

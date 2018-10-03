@@ -50,7 +50,7 @@ async function getRedirect(protocol, host, path) {
 function forward(host) {
     // check root domain is the same as the host
     var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
-    // forward to http:// incase a site went live without an SSL attached
+    // forward to the http://www. incase a site went live without an SSL attached
     newURL = 'http://www.' + host + path
     if (rootdomain[0] === host) {
         // add WWW and forward
