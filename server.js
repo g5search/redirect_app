@@ -4,8 +4,15 @@ var models = require('./app/models')
 //Sync the Database
 models.sequelize.sync().then(function () {
   console.log('Nice! Database looks fine')
+  
+  // start the servers only if you are connected to a database
+  var server = glx.listen(80, 443);
+  server.on('listening', function () {
+    console.info(server.type + " listening on", server.address());
+  });
+
 }).catch(function (err) {
-  console.log(err, "Something went wrong with the Database Update!")
+  console.log(err, "Something went wrong with the Database Connection!")
 });
 
 var glx = require('greenlock-express').create({
@@ -16,15 +23,10 @@ var glx = require('greenlock-express').create({
   app: function (req, res) {
     require('./app/lib/index.js')(req, res)
   },
-  email: process.env.GREENLOCK_EMAIL ,                                   // Email for Let's Encrypt account and Greenlock Security
-  agreeTos:(process.env.GREENLOCK_AGREETOS =="true"),                   // Accept Let's Encrypt ToS
-  communityMember:(process.env.GREENLOCK_COMMUNITYMEMBER == "true"),   // Join Greenlock to get important updates, no spam
+  email: process.env.GREENLOCK_EMAIL,                                     // Email for Let's Encrypt account and Greenlock Security
+  agreeTos: (process.env.GREENLOCK_AGREETOS == "true"),                  // Accept Let's Encrypt ToS
+  communityMember: (process.env.GREENLOCK_COMMUNITYMEMBER == "true"),   // Join Greenlock to get important updates, no spam
   debug: (process.env.GREENLOCK_DEBUG == "true")
-});
-
-var server = glx.listen(80, 443);
-server.on('listening', function () {
-  console.info(server.type + " listening on", server.address());
 });
 
 // [SECURITY]
@@ -34,9 +36,6 @@ server.on('listening', function () {
 // an attempt is made to issue a certificate for it.
 async function approveDomains(opts, certs, cb) {
 
-  console.log(opts.domain);
-  console.log(opts.domain);
-
   // Check that the hosting domain exists in the database.
   var domain = await models.domain.findAll({
     where: {
@@ -45,7 +44,6 @@ async function approveDomains(opts, certs, cb) {
   })
   if (domain.length > 0) {
     // the domain is in the database proceed
-    console.log('passed')
     cb(null, { options: opts, certs: certs });
   } else {
     // error callback
