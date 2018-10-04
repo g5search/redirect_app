@@ -14,7 +14,7 @@ var glx = require('greenlock-express').create({
   configDir: process.env.GREENLOCK_DIR,             // You MUST have access to write to directory where certs are saved.
   approveDomains: approveDomains,                  // Greenlock's wraps around tls.SNICallback. Check the domain name here and reject invalid ones
   app: function (req, res) {
-    require('./app/lib/redirect.js')(req, res)
+    require('./app/lib/index.js')(req, res)
   },
   email: process.env.GREENLOCK_EMAIL ,                                   // Email for Let's Encrypt account and Greenlock Security
   agreeTos:(process.env.GREENLOCK_AGREETOS =="true"),                   // Accept Let's Encrypt ToS
