@@ -15,7 +15,6 @@ async function redirect(req, res) {
     var host = req.hostname
     var protocol = req.protocol
     // query the database for the url and its destination
-    console.log('getting redirects')
     var redirect = await redirects.get(protocol, host, path)
     if ('destination' in redirect) {
         // check for redirect loop
