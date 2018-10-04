@@ -5,7 +5,7 @@ module.exports = {
 async function getDestination(host, path) {
     // get all wildcards for this domain
     var wildcards = await getWildcards(host)
-    
+
     if (wildcards.length > 0) {
         //look for a partial string match on the path
         for (i = 0; i < wildcards[0].redirects.length; i++) {

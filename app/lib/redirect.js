@@ -27,14 +27,11 @@ async function get(protocol, host, path) {
 }
 
 function format(domain) {
-    console.log('we are formatting now')
     if (domain.redirects.length > 1) {
         // there is more than one redirect for the domain and path this should never happen when edited through the UI
         return { error: 'more than one redirect for this domain and path' }
     } else if (domain.redirects.length === 1) {
-        // only one redirect found 
         var redirect = domain.redirects[0]
-        console.log(redirect)
         let destination = redirect.destination
         // is the desination secure or not
         if (redirect.secure_destination === true) {
@@ -45,11 +42,13 @@ function format(domain) {
         return { destination }
     } else {
         // there is no redirect for this - this code should not be reachable -
-        // if there is not redirects it should have already been forwarded
+        // if there is no redirects it should have already been forwarded
         return { error: 'There is no redirect for this domain' }
     }
 }
+
 function getDestination(host, path) {
+    // get redirects including wildcards in the care wherethe path is an exact match
     return models.domain.findAll({
         where: {
             domain: host
