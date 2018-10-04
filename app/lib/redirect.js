@@ -8,7 +8,6 @@ module.exports = {
 }
 
 async function get(protocol, host, path) {
-    console.log('were are getting redirects')
     var redirect = await getDestination(host, path)
     if (redirect.length === 1) {
         return format(redirect[0])
@@ -19,7 +18,7 @@ async function get(protocol, host, path) {
         // look for all wildcard redirects for this domain and find the first one that matches
         let wildcards = await wildcard.getDestination(host, path)
         if (wildcards !== null) {
-            return wildcards
+            return format(wildcards)
         } else {
             // no wildcards were found so forward the domain to the http://www.
             return forward.go(host, path)
@@ -28,12 +27,14 @@ async function get(protocol, host, path) {
 }
 
 function format(domain) {
+    console.log('we are formatting now')
     if (domain.redirects.length > 1) {
         // there is more than one redirect for the domain and path this should never happen when edited through the UI
         return { error: 'more than one redirect for this domain and path' }
     } else if (domain.redirects.length === 1) {
         // only one redirect found 
         var redirect = domain.redirects[0]
+        console.log(redirect)
         let destination = redirect.destination
         // is the desination secure or not
         if (redirect.secure_destination === true) {
