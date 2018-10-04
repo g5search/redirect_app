@@ -53,7 +53,9 @@ Start the app with PM2
 
  - Make sure that the URL you are checking is correctly pointed to the URL or IP of the app
  - Make sure that the domain that is pointed at the server is in the domains table
+    - The domain should not contain the protocol in or end in a "/"
  - Make sure that the domain_id is correct in the redirects table
+    - The path should start with a "/"
  - Tail the logs 
 	 - >pm2 logs redirectApp
    
