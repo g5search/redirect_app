@@ -51,7 +51,7 @@ Start the app with PM2
 
 ### Site is not redirecting
 
- - Make sure that the URL you are checking is correctly pointed to the URL or IP of 
+ - Make sure that the URL you are checking is correctly pointed to the URL or IP of the app
  - Make sure that the domain that is pointed at the server is in the domains table
  - Make sure that the domain_id is correct in the redirects table
  - Tail the logs 
