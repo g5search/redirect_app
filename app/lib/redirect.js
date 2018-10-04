@@ -37,17 +37,15 @@ async function getRedirect(protocol, host, path) {
         return { error: 'multiple domains have been found' }
     } else {
         // look for all wildcard redirects for this domain and find the first one that matches
-        let wildcards = await findWildcards(host)
+        let wildcards = await findWildcards(host, path)
         if (wildcards !== null) {
-            console.log('wildcards')
             return wildcards
         } else {
-            console.log('forward')
-            return forward(host)
+            return forward(host, path)
         }
     }
 }
-function forward(host) {
+function forward(host, path) {
     // check root domain is the same as the host
     var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
     // forward to the http://www. incase a site went live without an SSL attached
@@ -79,7 +77,7 @@ function formatRedirect(domain) {
         return { error: 'There is no redirect for this domain' }
     }
 }
-function findWildcards(host) {
+function findWildcards(host, path) {
     return models.domain.findAll({
         where: {
             domain: host
@@ -94,7 +92,8 @@ function findWildcards(host) {
         ],
         order: [['updatedAt', 'DESC']]
     }).then(wildcards => {
-        console.log(wildcards)
+        console.log('wildcards.length')
+        console.log(wildcards.length)
         if (wildcards.length > 0) {
             // itterate through the wildcard redirects looking for one with a partial string match with the path
             for (i = 0; i < wildcards[0].redirects.length; i++) {
@@ -110,8 +109,8 @@ function findWildcards(host) {
                     })
                 }
             }
-            return null
         }
+        return null
     })
 }
 
