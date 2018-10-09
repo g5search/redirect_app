@@ -1,4 +1,4 @@
-var forward = require('../app/lib/forward')
+var forward = require('../../app/lib/forward')
 
 describe('Forwarding', () => {
 	test('host is equal to root domain', () => {
