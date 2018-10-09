@@ -18,12 +18,13 @@ module.exports = {
 	// clearMocks: false,
 
 	// Indicates whether the coverage information should be collected while executing the test
-	collectCoverage: false,
+	// collectCoverage: true,
 
 	// An array of glob patterns indicating a set of files for which coverage information should be collected
 	collectCoverageFrom: [
-		'**/*.js',
-		"!**/node_modules/**"
+		'app/**/*.js',
+		"!**/node_modules/**",
+		"!app/models/**"
 	],
 
 	// The directory where Jest should output its coverage files
@@ -52,10 +53,10 @@ module.exports = {
 	// forceCoverageMatch: [],
 
 	// A path to a module which exports an async function that is triggered once before all test suites
-	globalSetup: '../globalSetup.js',
+	globalSetup: './__tests__/globalSetup.js',
 
 	// A path to a module which exports an async function that is triggered once after all test suites
-	globalTeardown: '../globalTeardown.js',
+	globalTeardown: './__tests__/globalTeardown.js',
 
 	// A set of global variables that need to be available in all test environments
 	// globals: {},
@@ -107,7 +108,7 @@ module.exports = {
 	// restoreMocks: false,
 
 	// The root directory that Jest should scan for tests and modules within
-	rootDir: './__tests__/scripts',
+	// rootDir: './__tests__/scripts',
 
 	// A list of paths to directories that Jest should use to search for files in
 	// roots: [
@@ -147,7 +148,7 @@ module.exports = {
 	// ],
 
 	// The regexp pattern Jest uses to detect test files
-	// testRegex: "",
+	testRegex: "__tests__\/.*\.(test|spec)\.js",
 
 	// This option allows the use of a custom results processor
 	// testResultsProcessor: null,
