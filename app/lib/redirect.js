@@ -4,9 +4,17 @@ var models = require('../models')
 
 module.exports = {
 	get,
-	format
+	format,
+	getDestination
 }
-
+/**
+ *
+ *
+ * @param {string} protocol
+ * @param {string} host
+ * @param {string} path
+ * @returns {{destination: string} | {error: string}}
+ */
 async function get(protocol, host, path) {
 	var redirect = await getDestination(host, path)
 	if (redirect.length === 1) {
@@ -17,7 +25,7 @@ async function get(protocol, host, path) {
 	} else {
 		// look for all wildcard redirects for this domain and find the first one that matches
 		let wildcards = await wildcard.getDestination(host, path)
-		if (wildcards !== null) {
+		if (wildcards !== undefined) {
 			return format(wildcards)
 		} else {
 			// no wildcards were found so forward the domain to the http://www.
@@ -25,7 +33,12 @@ async function get(protocol, host, path) {
 		}
 	}
 }
-
+/**
+ *
+ *
+ * @param {string} domain
+ * @returns {{error: string} | {destination: string}}
+ */
 function format(domain) {
 	if (domain.redirects.length > 1) {
 		// there is more than one redirect for the domain and path this should never happen when edited through the UI
@@ -47,6 +60,13 @@ function format(domain) {
 	}
 }
 
+/**
+ *
+ *
+ * @param {string} host
+ * @param {string} path
+ * @returns {id: int, domain: string, redirects: { path: string, desination: string, secure_destination: boolean, wildcard: boolean}}
+ */
 function getDestination(host, path) {
 	// get redirects including wildcards in the care wherethe path is an exact match
 	return models.domain.findAll({
