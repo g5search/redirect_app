@@ -19,9 +19,6 @@ async function get(protocol, host, path) {
 	var redirect = await getDestination(host, path)
 	if (redirect.length === 1) {
 		return format(redirect[0])
-	} else if (redirect.length > 1) {
-		// the database is not right there should never be more than one of each domain in the domain table
-		return { error: 'multiple domains have been found' }
 	} else {
 		// look for all wildcard redirects for this domain and find the first one that matches
 		let wildcards = await wildcard.getDestination(host, path)
@@ -40,12 +37,12 @@ async function get(protocol, host, path) {
  * @returns {{error: string} | {destination: string}}
  */
 function format(domain) {
-	if (domain.redirects.length > 1) {
+	if (domain.redirect_rule.length > 1) {
 		// there is more than one redirect for the domain and path this should never happen when edited through the UI
 		return { error: 'more than one redirect for this domain and path' }
-	} else if (domain.redirects.length === 1) {
-		var redirect = domain.redirects[0]
-		let destination = redirect.destination
+	} else if (domain.redirect_rule.length === 1) {
+		var redirect = domain.redirect_rule[0]
+		let destination = redirect.redirect_url
 		// is the desination secure or not
 		if (redirect.secure_destination === true) {
 			destination = 'https://' + destination
@@ -69,15 +66,15 @@ function format(domain) {
  */
 function getDestination(host, path) {
 	// get redirects including wildcards in the care wherethe path is an exact match
-	return models.domain.findAll({
+	return models.request_domain.findAll({
 		where: {
-			domain: host
+			name: host
 		},
 		include: [
 			{
-				model: models.redirect,
+				model: models.redirect_rule,
 				where: {
-					path: path
+					request_matcher: path
 				}
 			}
 		]

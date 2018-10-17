@@ -8,109 +8,100 @@ module.exports = async function (globalConfig) {
 		var seed_info = [
 			{
 				domain_table: {
-					domain: 'forward.com',
+					name: 'forward.com',
 				},
 				redirect_table: null
 			},
 			{
 				domain_table: {
-					domain: 'redirect.com'
+					name: 'redirect.com'
 				},
 				redirect_table: {
-					secure_destination: true,
-					destination: 'www.redirect.com/test',
-					path: '/redirect/test',
+					redirect_url: 'https://www.redirect.com/test',
+					request_matcher: '/redirect/test',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'wildcard.com'
+					name: 'wildcard.com'
 				},
 				redirect_table: {
-					path: '/wildcard/test',
+					request_matcher: '/wildcard/test',
 					wildcard: true,
-					destination: 'www.wildcard.com/wildcard/subdir',
-					secure_destination: true
+					redirect_url: 'https://www.wildcard.com/wildcard/subdir',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'nonsecure.com'
+					name: 'nonsecure.com'
 				},
 				redirect_table: {
-					secure_destination: false,
-					destination: 'www.nonsecure.com',
-					path: '/nonsecure',
+					redirect_url: 'http://www.nonsecure.com',
+					request_matcher: '/nonsecure',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'nonsecure.com'
+					name: 'nonsecure.com'
 				},
 				redirect_table: {
-					secure_destination: true,
-					destination: 'www.secure.com',
-					path: '/secure',
+					redirect_url: 'http://www.secure.com',
+					request_matcher: '/secure',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'secure.com'
+					name: 'secure.com'
 				},
 				redirect_table: {
-					secure_destination: false,
-					destination: 'www.nonsecure.com',
-					path: '/nonsecure',
+					redirect_url: 'http://www.nonsecure.com',
+					request_matcher: '/nonsecure',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'secure.com'
+					name: 'secure.com'
 				},
 				redirect_table: {
-					secure_destination: true,
-					destination: 'www.secure.com',
-					path: '/secure',
+					redirect_url: 'https://www.secure.com',
+					request_matcher: '/secure',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'domain.com'
+					name: 'domain.com'
 				},
 				redirect_table: {
-					secure_destination: true,
-					destination: 'www.secure.com',
-					path: '/secure',
+					redirect_url: 'https://www.secure.com',
+					request_matcher: '/secure',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'domain.com'
+					name: 'domain.com'
 				},
 				redirect_table: {
-					secure_destination: false,
-					destination: 'www.nonsecure.com',
-					path: '/secure',
+					redirect_url: 'http://www.nonsecure.com',
+					request_matcher: '/secure',
 				}
 			},
 			{
 				domain_table: {
-					domain: 'loop.com'
+					name: 'loop.com'
 				},
 				redirect_table: {
-					secure_destination: false,
-					destination: 'loop.com/',
-					path: '/',
+					redirect_url: 'https://loop.com/',
+					request_matcher: '/',
 				}
 			}
 		]
 		for (let i = 0; i < seed_info.length; i++) {
-			var domain = await models.domain.create(seed_info[i].domain_table)
+			var domain = await models.request_domain.findOrCreate(seed_info[i].domain_table)
 			// set the domain id for the redirect_table
 			if (seed_info[i].redirect_table !== null) {
-				seed_info[i].redirect_table.domain_id = domain.id
+				seed_info[i].redirect_table.request_domain_id = domain.id
 				// seed the redirect table with the correct domain id
-				await models.redirect.create(seed_info[i].redirect_table)
+				await models.redirect_rule.create(seed_info[i].redirect_table)
 			}
 		}
 	} catch (err) {

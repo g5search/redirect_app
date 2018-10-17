@@ -20,8 +20,8 @@ async function getDestination(host, path) {
 	}
 	if (wildcards.length > 0) {
 		//look for a partial string match on the path
-		for (let i = 0; i < wildcards[0].redirects.length; i++) {
-			let redirect_path = wildcards[0].redirects[i].path
+		for (let i = 0; i < wildcards[0].redirect_rule.length; i++) {
+			let redirect_path = wildcards[0].redirect_rule[i].request_matcher
 			if (redirect_path.charAt(redirect_path.length - 1) !== '/') {
 				// add / to the end of the path so that dirs with a partial name match are not matched 
 				// eg. domain.com/wildcards != domain.com/wildcardsstuff
@@ -41,18 +41,18 @@ async function getDestination(host, path) {
 }
 
 function getWildcards(host) {
-	return models.domain.findAll({
+	return models.request_domain.findAll({
 		where: {
-			domain: host
+			name: host
 		},
 		include: [
 			{
-				model: models.redirect,
+				model: models.redirect_rule,
 				where: {
 					wildcard: true
 				}
 			}
 		],
-		order: [['updatedAt', 'DESC']]
+		order: [['updated_at', 'DESC']]
 	})
 }

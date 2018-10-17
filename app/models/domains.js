@@ -1,6 +1,6 @@
 module.exports = function (sequelize, Sequelize) {
 
-	var domains = sequelize.define('domain', {
+	var request_domains = sequelize.define('request_domain', {
 
 		id: {
 			autoIncrement: true,
@@ -8,14 +8,22 @@ module.exports = function (sequelize, Sequelize) {
 			type: Sequelize.INTEGER
 		},
 
-		domain: {
+		name: {
 			type: Sequelize.STRING,
-			notEmpty: true
+			notEmpty: true,
+			unique: true
+		},
+		client_urn: {
+			type: Sequelize.STRING,
+			notEmpty: true,
 		}
-
+	},
+	{
+		createdAt: 'created_at',
+		updatedAt: 'updated_at'
 	})
-    domains.associate = function (models) {
-		models.domain.hasMany(models.redirect, { foreignKey: 'domain_id', sourceKey: 'id' })
-    }
-	return domains
+	request_domains.associate = function (models) {
+		models.request_domain.hasMany(models.redirect_rule, { foreignKey: 'request_domain_id', sourceKey: 'id' })
+	}
+	return request_domains
 }
