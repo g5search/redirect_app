@@ -45,7 +45,7 @@ module.exports = async function (globalConfig) {
 					request_matcher: '/nonsecure',
 				},
 				{
-					redirect_url: 'http://www.secure.com',
+					redirect_url: 'https://www.secure.com',
 					request_matcher: '/secure',
 				}
 				]
@@ -82,10 +82,10 @@ module.exports = async function (globalConfig) {
 				domain_table: {
 					name: 'loop.com'
 				},
-				redirect_table: {
-					redirect_url: 'https://loop.com/',
+				redirect_table: [{
+					redirect_url: 'http://loop.com/',
 					request_matcher: '/',
-				}
+				}]
 			}
 		]
 		for (let i = 0; i < seed_info.length; i++) {

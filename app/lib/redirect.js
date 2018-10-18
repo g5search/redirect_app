@@ -17,6 +17,7 @@ module.exports = {
  */
 async function get(protocol, host, path) {
 	var redirect = await getDestination(host, path)
+	debugger
 	if (redirect.length === 1) {
 		return format(redirect[0])
 	} else {

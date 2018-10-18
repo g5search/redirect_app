@@ -18,6 +18,7 @@ async function redirect(req, res) {
 	var redirect = await redirects.get(protocol, host, path)
 	if ('destination' in redirect) {
 		// check for redirect loop
+		debugger
 		if (redirect.destination !== protocol + '://' + host + path) {
 			res.redirect(301, redirect.destination)
 		} else {
