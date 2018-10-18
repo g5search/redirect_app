@@ -37,11 +37,11 @@ async function get(protocol, host, path) {
  * @returns {{error: string} | {destination: string}}
  */
 function format(domain) {
-	if (domain.redirect_rule.length > 1) {
+	if (domain.redirect_rules.length > 1) {
 		// there is more than one redirect for the domain and path this should never happen when edited through the UI
 		return { error: 'more than one redirect for this domain and path' }
-	} else if (domain.redirect_rule.length === 1) {
-		var redirect = domain.redirect_rule[0]
+	} else if (domain.redirect_rules.length === 1) {
+		var redirect = domain.redirect_rules[0]
 		let destination = redirect.redirect_url
 		// is the desination secure or not
 		if (redirect.secure_destination === true) {

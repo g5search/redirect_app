@@ -18,6 +18,8 @@ async function getDestination(host, path) {
 	catch (err) {
 		console.log(err)
 	}
+	debugger
+	console.log(wildcards)
 	if (wildcards.length > 0) {
 		//look for a partial string match on the path
 		for (let i = 0; i < wildcards[0].redirect_rule.length; i++) {
@@ -30,9 +32,7 @@ async function getDestination(host, path) {
 			if (path.indexOf(redirect_path) >= 0) {
 				return {
 					domain: wildcards[0].domain,
-					redirects: [
-						wildcards[0].redirects[i].dataValues
-					]
+					redirect_rules: wildcards[0].redirect_rules[i]
 				}
 			}
 		}
@@ -53,6 +53,6 @@ function getWildcards(host) {
 				}
 			}
 		],
-		order: [['updated_at', 'DESC']]
+		// order: [['request_matcher', 'DESC']]
 	})
 }

@@ -16,74 +16,67 @@ module.exports = async function (globalConfig) {
 				domain_table: {
 					name: 'redirect.com'
 				},
-				redirect_table: {
+				redirect_table: [{
 					redirect_url: 'https://www.redirect.com/test',
 					request_matcher: '/redirect/test',
-				}
+				}]
 			},
 			{
 				domain_table: {
 					name: 'wildcard.com'
 				},
-				redirect_table: {
+				redirect_table: [{
 					request_matcher: '/wildcard/test',
 					wildcard: true,
-					redirect_url: 'https://www.wildcard.com/wildcard/subdir',
-				}
+					redirect_url: 'https://www.wildcard.com/wildcard/subdir'
+				},
+				{
+					request_matcher: '/wildcard/test/subdir',
+					wildcard: true,
+					redirect_url: 'https://www.wildcard.com/wildcard/subdir/super/sub/dir'
+				}]
 			},
 			{
 				domain_table: {
 					name: 'nonsecure.com'
 				},
-				redirect_table: {
+				redirect_table: [{
 					redirect_url: 'http://www.nonsecure.com',
 					request_matcher: '/nonsecure',
-				}
-			},
-			{
-				domain_table: {
-					name: 'nonsecure.com'
 				},
-				redirect_table: {
+				{
 					redirect_url: 'http://www.secure.com',
 					request_matcher: '/secure',
 				}
+				]
 			},
 			{
 				domain_table: {
 					name: 'secure.com'
 				},
-				redirect_table: {
+				redirect_table: [{
 					redirect_url: 'http://www.nonsecure.com',
 					request_matcher: '/nonsecure',
-				}
-			},
-			{
-				domain_table: {
-					name: 'secure.com'
 				},
-				redirect_table: {
+				{
 					redirect_url: 'https://www.secure.com',
 					request_matcher: '/secure',
 				}
+				]
 			},
 			{
 				domain_table: {
 					name: 'domain.com'
 				},
-				redirect_table: {
+				redirect_table: [{
 					redirect_url: 'https://www.secure.com',
 					request_matcher: '/secure',
-				}
-			},
-			{
-				domain_table: {
-					name: 'domain.com'
 				},
-				redirect_table: {
+				{
 					redirect_url: 'http://www.nonsecure.com',
 					request_matcher: '/secure',
 				}
+				]
 			},
 			{
 				domain_table: {
@@ -96,12 +89,14 @@ module.exports = async function (globalConfig) {
 			}
 		]
 		for (let i = 0; i < seed_info.length; i++) {
-			var domain = await models.request_domain.findOrCreate(seed_info[i].domain_table)
+			var domain = await models.request_domain.create(seed_info[i].domain_table)
 			// set the domain id for the redirect_table
 			if (seed_info[i].redirect_table !== null) {
-				seed_info[i].redirect_table.request_domain_id = domain.id
-				// seed the redirect table with the correct domain id
-				await models.redirect_rule.create(seed_info[i].redirect_table)
+				for (let i2 = 0; i2 < seed_info[i].redirect_table.length; i2++) {
+					seed_info[i].redirect_table[i2].request_domain_id = domain.id
+					// seed the redirect table with the correct domain id
+					await models.redirect_rule.create(seed_info[i].redirect_table[i2])
+				}
 			}
 		}
 	} catch (err) {
