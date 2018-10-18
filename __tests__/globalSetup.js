@@ -34,7 +34,8 @@ module.exports = async function (globalConfig) {
 					request_matcher: '/wildcard/test/subdir',
 					wildcard: true,
 					redirect_url: 'https://www.wildcard.com/wildcard/subdir'
-				}]
+				}
+				]
 			},
 			{
 				domain_table: {

@@ -17,7 +17,6 @@ module.exports = {
  */
 async function get(protocol, host, path) {
 	var redirect = await getDestination(host, path)
-	debugger
 	if (redirect.length === 1) {
 		return format(redirect[0])
 	} else {
@@ -38,6 +37,7 @@ async function get(protocol, host, path) {
  * @returns {{error: string} | {destination: string}}
  */
 function format(domain) {
+	debugger
 	if (domain.redirect_rules.length > 1) {
 		// there is more than one redirect for the domain and path this should never happen when edited through the UI
 		return { error: 'more than one redirect for this domain and path' }

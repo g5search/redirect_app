@@ -14,18 +14,15 @@ async function getDestination(host, path) {
 	try {
 		// get all wildcards for this domain from database
 		wildcards = await getWildcards(host)
-		debugger
-		console.log(wildcards)
 	}
 	catch (err) {
 		console.log(err)
 	}
 	debugger
-	console.log(wildcards)
-	if (wildcards.length > 0) {
+	if (wildcards.length > 0 && wildcards[0].redirect_rules.length > 0) {
 		//look for a partial string match on the path
-		for (let i = 0; i < wildcards[0].redirect_rule.length; i++) {
-			let redirect_path = wildcards[0].redirect_rule[i].request_matcher
+		for (let i = 0; i < wildcards[0].redirect_rules.length; i++) {
+			let redirect_path = wildcards[0].redirect_rules[i].request_matcher
 			if (redirect_path.charAt(redirect_path.length - 1) !== '/') {
 				// add / to the end of the path so that dirs with a partial name match are not matched 
 				// eg. domain.com/wildcards != domain.com/wildcardsstuff
@@ -33,8 +30,8 @@ async function getDestination(host, path) {
 			}
 			if (path.indexOf(redirect_path) >= 0) {
 				return {
-					domain: wildcards[0].domain,
-					redirect_rules: wildcards[0].redirect_rules[i]
+					name: wildcards[0].name,
+					redirect_rules: [wildcards[0].redirect_rules[i]]
 				}
 			}
 		}
@@ -55,6 +52,6 @@ function getWildcards(host) {
 				}
 			}
 		],
-		// order: [['request_matcher', 'DESC']]
+		order: [[{model: models.redirect_rule}, 'request_matcher', 'DESC']]
 	})
 }
