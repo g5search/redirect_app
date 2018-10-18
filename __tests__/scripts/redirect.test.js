@@ -65,10 +65,6 @@ test('https to https', async () => {
 	let redirects = await redirect.get('https://', 'secure.com', '/secure')
 	expect(redirects).toEqual({destination: 'https://www.secure.com'})
 })
-test('Domain is in database more than once', async () => {
-	let redirects = await redirect.get('https://', 'domain.com', '/secure')
-	expect(redirects).toEqual({ error: 'multiple domains have been found' })
-})
 test('Wildcard', async () => {
 	let redirects = await redirect.get('https://', 'wildcard.com', '/wildcard/test/subdir')
 	expect(redirects).toEqual({ destination: 'https://www.wildcard.com/wildcard/subdir' })
