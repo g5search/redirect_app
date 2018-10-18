@@ -66,6 +66,7 @@ test('https to https', async () => {
 	expect(redirects).toEqual({destination: 'https://www.secure.com'})
 })
 test('Wildcard', async () => {
+	debugger
 	let redirects = await redirect.get('https://', 'wildcard.com', '/wildcard/test/subdir')
 	expect(redirects).toEqual({ destination: 'https://www.wildcard.com/wildcard/subdir' })
 })

@@ -43,12 +43,6 @@ function format(domain) {
 	} else if (domain.redirect_rules.length === 1) {
 		var redirect = domain.redirect_rules[0]
 		let destination = redirect.redirect_url
-		// is the desination secure or not
-		if (redirect.secure_destination === true) {
-			destination = 'https://' + destination
-		} else {
-			destination = 'http://' + destination
-		}
 		return { destination }
 	} else {
 		// there is no redirect for this - this code should not be reachable -

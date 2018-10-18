@@ -14,6 +14,8 @@ async function getDestination(host, path) {
 	try {
 		// get all wildcards for this domain from database
 		wildcards = await getWildcards(host)
+		debugger
+		console.log(wildcards)
 	}
 	catch (err) {
 		console.log(err)
