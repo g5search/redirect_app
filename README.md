@@ -43,6 +43,7 @@ install the node modules
 ### Step 6 
 Install [PM2](https://pm2.io/doc/en/runtime/overview/) to run the app after the SSH session is closed
 > npm install pm2 -g
+> Follow these steps to create a [start up hook](https://pm2.io/doc/en/runtime/guide/startup-hook/#installation)
 
 ### Step 7
 Start the app with PM2
