@@ -1,21 +1,19 @@
-module.exports = function (sequelize, Sequelize) {
+const { INTEGER, STRING } = require('sequelize');
 
-	var domains = sequelize.define('domain', {
-
+module.exports = function (sequelize) {
+	const domains = sequelize.define('domain', {
 		id: {
 			autoIncrement: true,
 			primaryKey: true,
-			type: Sequelize.INTEGER
+			type: INTEGER
 		},
-
 		domain: {
-			type: Sequelize.STRING,
+			type: STRING,
 			notEmpty: true
 		}
-
 	})
-    domains.associate = function (models) {
+	domains.associate = function (models) {
 		models.domain.hasMany(models.redirect, { foreignKey: 'domain_id', sourceKey: 'id' })
-    }
+	}
 	return domains
 }

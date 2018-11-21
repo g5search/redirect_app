@@ -26,5 +26,9 @@ module.exports = {
             "error",
             "never"
         ]
+    },
+    globals: {
+        'global': true,
+        'process': true
     }
 };

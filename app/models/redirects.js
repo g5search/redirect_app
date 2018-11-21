@@ -1,38 +1,33 @@
-module.exports = function (sequelize, Sequelize) {
+const { INTEGER, STRING, BOOLEAN } = require('sequelize');
 
-	var redirect = sequelize.define('redirect', {
-
+module.exports = function (sequelize) {
+	return sequelize.define('redirect', {
 		id: {
 			autoIncrement: true,
 			primaryKey: true,
-			type: Sequelize.INTEGER
+			type: INTEGER
 		},
-
 		domain_id: {
-			type: Sequelize.INTEGER,
+			type: INTEGER,
 			notEmpty: true
 		},
-
 		path: {
-			type: Sequelize.STRING,
+			type: STRING,
 			notEmpty: true
 		},
 		destination: {
-			type: Sequelize.STRING,
+			type: STRING,
 			notEmpty: true
 		},
 		secure_destination: {
-			type: Sequelize.BOOLEAN,
+			type: BOOLEAN,
 			allowNull: false,
 			defaultValue: true
 		},
 		wildcard: {
-			type: Sequelize.BOOLEAN,
+			type: BOOLEAN,
 			allowNull: false,
 			defaultValue: false
 		}
 	})
-
-	return redirect
-
 }
