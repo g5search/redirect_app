@@ -25,10 +25,15 @@ module.exports = {
         "semi": [
             "error",
             "never"
+        ],
+        'no-console': [
+            "error",
+            { allow: ["warn", "error", "info"] }
         ]
     },
     globals: {
         'global': true,
-        'process': true
+        'process': true,
+        '__dirname': true
     }
 };
