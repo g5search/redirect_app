@@ -1,33 +1,34 @@
-var redirect = require('../../app/lib/redirect')
-var multipleDesitnations = {
-	domain: 'forward.com', 
+const redirect = require('../../app/lib/redirect')
+const multipleDesitnations = {
+	domain: 'forward.com',
 	redirects: [
 		{
-			path: '/test/sub/dir', 
+			path: '/test/sub/dir',
 			destination: 'www.test.com/stuff',
-			secure_destination: true, 
+			secure_destination: true,
 			wildcard: false
 		},
 		{
-			path: '/test/sub/dir', 
+			path: '/test/sub/dir',
 			destination: 'www.test.com/stuff',
-			secure_destination: false, 
+			secure_destination: false,
 			wildcard: false
 		}
 	]
 }
-var secureDestination = {
-	domain: 'forward.com', 
+
+const secureDestination = {
+	domain: 'forward.com',
 	redirects: [
 		{
-			path: '/test/sub/dir', 
+			path: '/test/sub/dir',
 			destination: 'www.test.com/stuff',
 			wildcard: false
 		}
 	]
 }
-var forward = {
-	domain: 'forward.com', 
+const forward = {
+	domain: 'forward.com',
 	redirects: [
 	]
 }
@@ -51,19 +52,19 @@ test('No Redirects', () => {
 })
 test('http to https', async () => {
 	let redirects = await redirect.get('http://', 'nonsecure.com', '/secure')
-	expect(redirects).toEqual({destination: 'https://www.secure.com'})
+	expect(redirects).toEqual({ destination: 'https://www.secure.com' })
 })
 test('http to http', async () => {
 	let redirects = await redirect.get('http://', 'nonsecure.com', '/nonsecure')
-	expect(redirects).toEqual({destination: 'http://www.nonsecure.com'})
+	expect(redirects).toEqual({ destination: 'http://www.nonsecure.com' })
 })
 test('https to http', async () => {
 	let redirects = await redirect.get('https://', 'secure.com', '/nonsecure')
-	expect(redirects).toEqual({destination: 'http://www.nonsecure.com'})
+	expect(redirects).toEqual({ destination: 'http://www.nonsecure.com' })
 })
 test('https to https', async () => {
 	let redirects = await redirect.get('https://', 'secure.com', '/secure')
-	expect(redirects).toEqual({destination: 'https://www.secure.com'})
+	expect(redirects).toEqual({ destination: 'https://www.secure.com' })
 })
 test('Domain is in database more than once', async () => {
 	let redirects = await redirect.get('https://', 'domain.com', '/secure')

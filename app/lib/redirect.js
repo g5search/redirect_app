@@ -1,5 +1,4 @@
 var wildcard = require('./wildcard')
-var forward = require('./forward')
 var models = require('../models')
 
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
 	getDestination
 }
 
-async function get(_, host, path) {
+let get = async (host, path) => {
 	const redirect = await getDestination(host, path)
 
 	if (redirect.length > 1) // multiple redirects
@@ -18,25 +17,32 @@ async function get(_, host, path) {
 		return format(redirect[0])
 
 	const wildcards = await wildcard.getDestination(host, path)
-	return wildcards ? format(wildcards) : forward.go(host, path)
+	return wildcards ? format(wildcards) : forward(host, path)
 }
 
-function format([redirect, ...extras]) {
+let format = ([redirect, ...extras]) => {
 	if (extras.length || !redirect)
 		throw new Error(`Found and invalid number of redirects, count: ${extras.length + redirect ? 1 : 0}`)
 
 	return { destination: `http${redirect.secure_destination ? 's' : ''}://${redirect.destination}` }
 }
 
-function getDestination(domain, path) {
-	// get redirects including wildcards in the care wherethe path is an exact match
-	return models.domain.findAll({
-		where: { domain },
-		include: [
-			{
-				model: models.redirect,
-				where: { path }
-			}
-		]
-	})
+let getDestination = (domain, path) => models.domain.findAll({
+	where: { domain },
+	include: [
+		{
+			model: models.redirect,
+			where: { path }
+		}
+	]
+})
+
+let forward = (host, path) => {
+	// check root domain is the same as the host
+	var [rootdomain] = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
+	// forward to the http://www. incase a site went live without an SSL attached
+	if (rootdomain !== host)
+		throw new Error('Redirects are not configured for this subdomain')
+
+	return { destination: `http://www.${host}${path}` }
 }
