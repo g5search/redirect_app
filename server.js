@@ -6,7 +6,7 @@ const { GREENLOCK_SERVER: server, GREENLOCK_DIR: configDir, GREENLOCK_EMAIL: ema
 
 //Sync the Database
 models.sequelize.sync().then(_ => {
-	const server = glx.listen(80, 443);
+	const server = glx.listen(80, 443)
 	server.on('listening', () => console.info(`${server.type} listening on ${server.address()}`))
 }).catch(console.error)
 

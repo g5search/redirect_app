@@ -2,7 +2,7 @@ require('dotenv').config()
 // set up a table in the DB with some seed data
 var models = require('../app/models')
 
-module.exports = async function (globalConfig) {
+module.exports = async function () {
 	await models.sequelize.sync()
 	var seedInfo = [
 		{
