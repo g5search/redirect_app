@@ -18,7 +18,7 @@ BaseImageTag: "11.5.0"
 
 # Default to false. Setting to true disables installing bower and bower-related
 # dependencies.
-# DisableBower: true
+DisableBower: true
 
 # A list of additional environment variables that should be present in the test
 # container. Some variables are already set automatically and this will not
