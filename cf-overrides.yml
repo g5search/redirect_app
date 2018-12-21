@@ -25,9 +25,9 @@ DisableBower: true
 # container. Some variables are already set automatically and this will not
 # override them.
 TestEnvironment:
-  - POSTGRES_USER=$POSTGRES_USER
-  - DATABASE_URL=$POSTGRES_USER
-  
+  - POSTGRES_USER=${{POSTGRES_USER}}
+  - DATABASE_URL=${{POSTGRES_USER}}
+
 # Replaces the default command for running tests. Can be any one-line command
 # that will run successfully in the test container.
 # TestOverride: "yarn test"
