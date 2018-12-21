@@ -1,6 +1,12 @@
-var wildcard = require("./wildcard");
-var models = require("../models");
-
+const wildcard = require("./wildcard");
+const models = require("../models");
+/**
+ *
+ *
+ * @param {*} host
+ * @param {*} path
+ * @returns {{destination: string}}
+ */
 async function get(host, path) {
   const destinations = await getDestination(host, path);
 
@@ -20,13 +26,13 @@ function format([redirect, ...extras]) {
   if (extras.length || !redirect) {
     throw new Error(
       `Found an invalid number of redirects, count: ${extras.length +
-        (redirect ? 1 : 0)}`
+      (redirect ? 1 : 0)}`
     );
   }
   return {
     destination: `http${redirect.secure_destination ? "s" : ""}://${
       redirect.destination
-    }`
+      }`
   };
 }
 

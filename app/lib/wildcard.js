@@ -1,21 +1,27 @@
-var models = require("../models");
+const models = require('../models')
 
 let getDestination = async (host, path) => {
-  const [wildcard] = await getWildcards(host);
-  if (typeof wildcard == "undefined") return;
+  const [wildcard] = await getWildcards(host)
+  if (typeof wildcard == 'undefined') {
+    return
+  }
 
   for (const redirect of wildcard.redirects) {
-    var redirectPath = redirect.path;
-    if (redirectPath.split("").pop() !== "/") redirectPath += "/";
-    if (path.includes(redirectPath))
+    let redirectPath = redirect.path
+    if (redirectPath.split('').pop() !== '/') {
+      redirectPath += '/'
+    }
+    if (path.includes(redirectPath)) {
       return {
         domain: wildcard.domain,
         redirects: [redirect.dataValues]
-      };
+      }
+    }
   }
-};
+  throw new Error('No matching redirect found')
+}
 
-let getWildcards = domain =>
+const getWildcards = domain =>
   models.domain.findAll({
     where: { domain },
     include: [
@@ -24,9 +30,9 @@ let getWildcards = domain =>
         where: { wildcard: true }
       }
     ],
-    order: [["updatedAt", "DESC"]]
-  });
+    order: [['updatedAt', 'DESC']]
+  })
 
 module.exports = {
   getDestination
-};
+}
