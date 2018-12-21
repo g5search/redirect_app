@@ -1,6 +1,7 @@
 # REQUIRED - Valid tag for node image to use as the basis for this
 # application's Docker image. See https://hub.docker.com/r/library/node/tags/
 BaseImageTag: "11.5.0"
+TestPostgresImageTag: "9.5.2"
 
 # Upgrades/downgrades yarn to a specific version. If not set, any yarn commands
 # in the build steps will use the latest version of yarn.
