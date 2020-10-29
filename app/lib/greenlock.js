@@ -1,4 +1,4 @@
-var pkg = require('./package.json');
+var pkg = require('../../package.json');
 var Greenlock = require('greenlock');
 var greenlock = Greenlock.create({
     configDir: '../greenlock.d/config.json',
