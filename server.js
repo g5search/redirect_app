@@ -1,11 +1,11 @@
 require('dotenv').config()
 const models = require('./app/models')
 const app = require('./app/lib/index.js')
-const path = require('path')
+
 
 require("greenlock-express")
     .init({
-        packageRoot: path.resolve(__dirname, '..'),
+        packageRoot: __dirname,
         // contact for security and critical bug notices
         configDir: "./greenlock.d",
         maintainerEmail: 'tyler.hasenoehrl@getg5.com',
