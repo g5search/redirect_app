@@ -5,11 +5,10 @@ const app = require('./app/lib/index.js')
 
 require("greenlock-express")
     .init({
-        packageRoot: __dirname,
- 
+        packageRoot: path.resolve(__dirname, '..'),
         // contact for security and critical bug notices
         configDir: "./greenlock.d",
- 
+        maintainerEmail: 'tyler.hasenoehrl@getg5.com',
         // whether or not to run at cloudscale
         cluster: false
     })
