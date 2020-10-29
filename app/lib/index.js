@@ -2,7 +2,6 @@ const app = require('express')()
 const redirects = require('./redirect')
 const greenlock = require('./greenlock')
 // respond to all GET requests
-module.exports()
 app.get('*', ({ path, hostname, protocol }, res) => {
   redirects
     .get(hostname, path)
