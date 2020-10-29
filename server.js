@@ -17,12 +17,12 @@ require("greenlock-express")
     .serve(app);
 
 //Sync the Database
-models.sequelize
-  .sync()
-  .then(() => {
-    console.log("Models Sync'd")
-  })
-  .catch(console.error)
+// models.sequelize
+//   .sync()
+//   .then(() => {
+//     console.log("Models Sync'd")
+//   })
+//   .catch(console.error)
 
 // [SECURITY]
 // Since v2.4.0+ Greenlock proactively protects against

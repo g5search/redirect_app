@@ -8,12 +8,17 @@ const {
   DATABASE_IDLE: idle,
   DATABASE_AQUIRE: acquire,
   DATABASE_EVICT: evict,
-  DATABASE_SSL: ssl
+  DATABASE_SSL: ssl,
+  DATABASE_CA: ca,
+  DATABASE_CERT: cert,
+  DATABASE_KEY: key
 } = process.env
 console.log({ dbUrl: dbUrl })
 const sequelize = new Sequelize(dbUrl, {
   pool: { max, min, idle, acquire, evict },
-  dialectOptions: { ssl: ssl === 'true' },
+  dialectOptions: {
+    ssl: (ssl === 'true') ? { ca, cert, key } : false
+  },
   logging: false
 })
 
