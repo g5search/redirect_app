@@ -21,10 +21,7 @@ require("greenlock-express")
 models.sequelize
   .sync()
   .then(() => {
-    const server = glx.listen(80, 443)
-    server.on('listening', () =>
-      console.info(`${server.type} listening on ${server.address()}`)
-    )
+    console.log("Models Sync'd")
   })
   .catch(console.error)
 
