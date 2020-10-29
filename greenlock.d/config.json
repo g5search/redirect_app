@@ -15,5 +15,13 @@
     "subscriberEmail": "tyler.hasenoehrl@getg5.com",
     "agreeToTerms": true
   },
-  "sites": []
+  "sites": [
+    {
+      "subject": "redirect.tylerhasenoehrl.com",
+      "altnames": [
+        "redirect.tylerhasenoehrl.com"
+      ],
+      "renewAt": 1
+    }
+  ]
 }
