@@ -1,7 +1,7 @@
 require('dotenv').config()
 const models = require('./app/models')
 const app = require('./app/lib/index.js')
-
+const path = require('path')
 
 require("greenlock-express")
     .init({
