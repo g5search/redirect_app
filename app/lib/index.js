@@ -1,13 +1,6 @@
 const app = require('express')()
 const redirects = require('./redirect')
-const Honeybadger = require('honeybadger')
-const { honeybadgerAPIKey } = process.env
-Honeybadger.configure({
-  apiKey: honeybadgerAPIKey
-})
-
-app.use(require('helmet')())
-
+const greenlock = require('greenlock-express')
 // respond to all GET requests
 app.get('*', ({ path, hostname, protocol }, res) => {
   redirects
@@ -18,8 +11,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
         res.redirect(301, redirect.destination)
       }
       else {
-        Honeybadger.notify(`${hostname} is incorrectly configured creating a redirect loop`)
-        res
+        res 
           .status(404)
           .send(
             `${hostname} is incorrectly configured creating a redirect loop`
@@ -27,9 +19,15 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       }
     })
     .catch(err => {
-      Honeybadger.notify(err)
       res.status(404).send(err.toString())
     })
-})
+}),
+
+  app.post('/api/v1/redirects', (req, res) => {
+    const domains = greenlock.sites.add({
+      subject: "example.com",
+      altnames: ["example.com"]
+    });
+  })
 
 module.exports = app
