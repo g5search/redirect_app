@@ -24,11 +24,12 @@ app.get('*', ({ path, hostname, protocol }, res) => {
 }),
 
   app.post('/api/v1/redirects', (req, res) => {
-    console.log({ greenlock: greenlock })
     const domains = greenlock.sites.add({
-      subject: "redirect2.tylerhasenoehrl.com",
-      altnames: ["redirect2.tylerhasenoehrl.com"]
+      subject: "redirect3.tylerhasenoehrl.com",
+      altnames: ["redirect3.tylerhasenoehrl.com"]
     });
+    console.log(domains)
+    res.sendStatus(200)
   })
 
 module.exports = app
