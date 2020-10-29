@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
-
 const {
   DATABASE_URL: dbUrl,
   DATABASE_MAX_CONNECTIONS: max,
@@ -11,7 +10,7 @@ const {
   DATABASE_EVICT: evict,
   DATABASE_SSL: ssl
 } = process.env
-
+console.log({ dbUrl: dbUrl })
 const sequelize = new Sequelize(dbUrl, {
   pool: { max, min, idle, acquire, evict },
   dialectOptions: { ssl: ssl === 'true' },
