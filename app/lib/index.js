@@ -1,6 +1,6 @@
 const app = require('express')()
 const redirects = require('./redirect')
-const greenlock = require('./greenlock')
+const greenlock = require('../../greenlock')
 // respond to all GET requests
 app.get('*', ({ path, hostname, protocol }, res) => {
   redirects

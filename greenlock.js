@@ -1,7 +1,8 @@
-var pkg = require('../../package.json');
+var pkg = require('./package.json');
 var Greenlock = require('greenlock');
 var greenlock = Greenlock.create({
-    configDir: '../greenlock.d/config.json',
+    packageRoot: __dirname,
+    configDir: "./greenlock.d/",
     packageAgent: pkg.name + '/' + pkg.version,
     maintainerEmail: 'tyler.hasenoehrl@getg5.com',
     staging: true,
