@@ -3,7 +3,7 @@ var Greenlock = require('greenlock');
 var greenlock = Greenlock.create({
     configDir: '../greenlock.d/config.json',
     packageAgent: pkg.name + '/' + pkg.version,
-    maintainerEmail: 'tyler.hasenoehrl@getg5.com',,
+    maintainerEmail: 'tyler.hasenoehrl@getg5.com',
     staging: true,
     notify: function(event, details) {
         if ('error' === event) {
