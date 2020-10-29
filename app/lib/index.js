@@ -1,7 +1,8 @@
 const app = require('express')()
 const redirects = require('./redirect')
-const greenlock = require('greenlock-express')
+const greenlock = require('./greenlock')
 // respond to all GET requests
+module.exports()
 app.get('*', ({ path, hostname, protocol }, res) => {
   redirects
     .get(hostname, path)
@@ -24,7 +25,6 @@ app.get('*', ({ path, hostname, protocol }, res) => {
 }),
 
   app.post('/api/v1/redirects', (req, res) => {
-    greenlock.sites
     const domains = greenlock.sites.add({
       subject: "redirect2.tylerhasenoehrl.com",
       altnames: ["redirect2.tylerhasenoehrl.com"]
