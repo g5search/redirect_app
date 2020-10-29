@@ -23,8 +23,8 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     })
 }),
 
-  app.post('/api/v1/redirects', (req, res) => {
-    const domains = greenlock.sites.add({
+  app.post('/api/v1/redirects', async (req, res) => {
+    const domains = await greenlock.sites.add({
       subject: "redirect3.tylerhasenoehrl.com",
       altnames: ["redirect3.tylerhasenoehrl.com"]
     });
