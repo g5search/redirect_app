@@ -53,6 +53,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
       where: { domain },
       defaults: { domain }
     })
+    console.log(domain)
     const redirect = await models.redirect.create({
       domain_id: dbDomain.dataValues.id,
       path,
