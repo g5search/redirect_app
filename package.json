@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Tylrhas/redirect_app#readme",
   "dependencies": {
     "@greenlock/manager": "^3.1.0",
+    "@greenlock/store-sequelize": "^3.0.3",
     "@root/greenlock": "^4.0.5",
     "dotenv": "^6.2.0",
     "express": "^4.17.1",

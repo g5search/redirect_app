@@ -2,12 +2,12 @@ require('dotenv').config()
 const models = require('./app/models')
 const app = require('./app/lib/index.js')
 
-
 require("greenlock-express")
     .init({
-        packageRoot: __dirname,
+      store: require('@greenlock/store-sequelize').create({ db: models.sequelize }),
+      packageRoot: __dirname,
         // contact for security and critical bug notices
-        configDir: "./greenlock.d",
+        // configDir: "./greenlock.d",
         maintainerEmail: 'tyler.hasenoehrl@getg5.com',
         // whether or not to run at cloudscale
         cluster: false
@@ -16,13 +16,13 @@ require("greenlock-express")
     // Get's SSL certificates magically!
     .serve(app);
 
-//Sync the Database
-// models.sequelize
-//   .sync()
-//   .then(() => {
-//     console.log("Models Sync'd")
-//   })
-//   .catch(console.error)
+// Sync the Database
+models.sequelize
+  .sync()
+  .then(() => {
+    console.log("Models Sync'd")
+  })
+  .catch(console.error)
 
 // [SECURITY]
 // Since v2.4.0+ Greenlock proactively protects against
