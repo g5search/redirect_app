@@ -13,4 +13,14 @@ var greenlock = Greenlock.create({
         }
     }
 });
+
+// greenlock.manager
+//     .defaults({
+//         agreeToTerms: true,
+//         subscriberEmail: 'webhosting@example.com'
+//     })
+//     .then(function(fullConfig) {
+//         // ...
+//     });
+
 module.exports = greenlock

@@ -24,7 +24,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     })
 }),
   app.post('/api/v1/redirects', express.json(), async (req, res) => {
-    const domains = await greenlock.sites.remove({
+    const domains = await greenlock.remove({
       subject: "redirect3.tylerhasenoehrl.com"
       // altnames: ["redirect3.tylerhasenoehrl.com"]
     });
