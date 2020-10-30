@@ -1,7 +1,7 @@
 const { INTEGER, STRING } = require('sequelize')
 
 module.exports = sequelize => {
-  const domains = sequelize.define('domain2', {
+  const domains = sequelize.define('domain', {
     id: {
       autoIncrement: true,
       primaryKey: true,
