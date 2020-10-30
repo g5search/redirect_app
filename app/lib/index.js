@@ -24,16 +24,16 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       res.status(404).send(err.toString())
     })
 })
-  app.post('/api/v1/backfill',express.json(), async (req, res) => {
-    const domains = await models.domain.findAll()
-    for (let i =0; i < domains.length; i++) {
-      const domain = await greenlock.add({
-        subject: domains[i].dataValues.domain,
-        altnames: [domains[i].dataValues.domain]
-      })
-    }
-    res.sendStatus(200)
-  })
+  // app.post('/api/v1/backfill',express.json(), async (req, res) => {
+  //   const domains = await models.domain.findAll()
+  //   for (let i =0; i < domains.length; i++) {
+  //     greenlock.add({
+  //       subject: domains[i].dataValues.domain,
+  //       altnames: [domains[i].dataValues.domain]
+  //     })
+  //   }
+  //   res.sendStatus(200)
+  // })
 app.post('/api/v1/redirects', express.json(), async (req, res) => {
   const { body } = req
   for (let i = 0; i < body.length; i++) {
