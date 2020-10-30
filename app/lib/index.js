@@ -25,15 +25,15 @@ app.get('*', ({ path, hostname, protocol }, res) => {
 }),
   app.post('/api/v1/redirects', express.json(), async (req, res) => {
     const domains = await greenlock.add({
-      subject: "redirect3.tylerhasenoehrl.com",
-      altnames: ["redirect3.tylerhasenoehrl.com"]
+      subject: "redirect2.tylerhasenoehrl.com",
+      altnames: ["redirect2.tylerhasenoehrl.com"]
     });
     console.log(domains)
     res.sendStatus(200)
   })
   app.delete('/api/v1/redirects', express.json(), async (req, res) => {
     const domains = await greenlock.manager.remove({
-      subject: "redirect3.tylerhasenoehrl.com"
+      subject: "redirect2.tylerhasenoehrl.com"
     });
     console.log(domains)
     res.sendStatus(200)
