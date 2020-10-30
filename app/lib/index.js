@@ -26,7 +26,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
 })
   app.post('/api/v1/backfill',express.json(), async (req, res) => {
     const domain = models.domain.findOne({
-      where: req.body.domain
+      where: { domain: req.body.domain }
     })
     const domains = await greenlock.add({
       subject: req.body.domain,
