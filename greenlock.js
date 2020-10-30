@@ -4,8 +4,8 @@ var Greenlock = require('@root/greenlock');
 var greenlock = Greenlock.create({
     // store: require('greenlock-store-sequelize')({ db:  }),
     packageRoot: __dirname,
+    // contact for security and critical bug notices
     configDir: "./greenlock.d",
-    packageAgent: pkg.name + '/' + pkg.version,
     maintainerEmail: 'tyler.hasenoehrl@getg5.com',
     staging: true,
     notify: function(event, details) {
@@ -15,5 +15,13 @@ var greenlock = Greenlock.create({
         }
     }
 });
-
-module.exports = greenlock
+greenlock.manager
+    .defaults({
+        agreeToTerms: true,
+        subscriberEmail: 'tyler.hasenoehrl@getg5.com'
+    })
+    .then(function(fullConfig) {
+        // ...
+    });
+console.log(greenlock)
+module.exports = greenlock 

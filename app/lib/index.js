@@ -32,7 +32,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     res.sendStatus(200)
   })
   app.delete('/api/v1/redirects', express.json(), async (req, res) => {
-    const domains = await greenlock.remove({
+    const domains = await greenlock.manager.remove({
       subject: "redirect3.tylerhasenoehrl.com"
     });
     console.log(domains)
