@@ -49,12 +49,12 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
       subject: domain,
       altnames: [domain]
     })
-    const dbDomain = await models.domain.findOrCreate({
+    const [dbDomain, created] = await models.domain.findOrCreate({
       where: { domain },
       defaults: { domain }
     })
     .catch(err => console.log(err))
-    console.log({ domain: domain })
+    console.log({ dbDomain: dbDomain })
     const redirect = await models.redirect.create({
       domain_id: dbDomain.dataValues.id,
       path,
