@@ -24,7 +24,6 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       res.status(404).send(err.toString())
     })
 })
-app.use()
   app.post('/api/v1/backfill',express.json(), async (req, res) => {
     const domain = models.domain.findOne({
       where: req.body.domain
