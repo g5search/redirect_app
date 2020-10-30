@@ -5,11 +5,11 @@ var sequelize = null
 if (process.env.NODE_ENV !== 'test') {
 	sequelize = new Sequelize(process.env.DATABASE_URL, {
 		pool: {
-			max: process.env.DATABASE_MAX_CONNECTIONS,
-			min: process.env.DATABASE_MIN_CONNECTIONS,
-			idle: process.env.DATABASE_IDLE,
-			acquire: process.env.DATABASE_AQUIRE,
-			evict: process.env.DATABASE_EVICT,
+			max: parseInt(process.env.DATABASE_MAX_CONNECTIONS),
+			min: parseInt(process.env.DATABASE_MIN_CONNECTIONS),
+			idle: parseInt(process.env.DATABASE_IDLE),
+			acquire: parseInt(process.env.DATABASE_AQUIRE),
+			evict: parseInt(process.env.DATABASE_EVICT),
 		},
 		dialectOptions: {
 			// convert the string to a boolean
@@ -20,11 +20,11 @@ if (process.env.NODE_ENV !== 'test') {
 } else {
 	sequelize = new Sequelize(process.env._TEST_DATABASE_URL, {
 		pool: {
-			max: process.env._TEST_DATABASE_MAX_CONNECTIONS,
-			min: process.env._TEST_DATABASE_MIN_CONNECTIONS,
-			idle: process.env._TEST_DATABASE_IDLE,
-			acquire: process.env._TEST_DATABASE_AQUIRE,
-			evict: process.env._TEST_DATABASE_EVICT,
+			max: parseInt(process.env._TEST_DATABASE_MAX_CONNECTIONS),
+			min: parseInt(process.env._TEST_DATABASE_MIN_CONNECTIONS),
+			idle: parseInt(process.env._TEST_DATABASE_IDLE),
+			acquire: parseInt(process.env._TEST_DATABASE_AQUIRE),
+			evict: parseInt(process.env._TEST_DATABASE_EVICT),
 		},
 		dialectOptions: {
 			// convert the string to a boolean
@@ -34,14 +34,14 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 var db = {}
-
 fs
 	.readdirSync(__dirname)
 	.filter(function (file) {
 		return (file.indexOf('.') !== 0) && (file !== 'index.js')
   })
 	.forEach(function (file) {
-		var model = sequelize.import(path.join(__dirname, file))
+    var model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes)
+    console.log({ model })
     db[model.name] = model
   })
 

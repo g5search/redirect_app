@@ -1,8 +1,5 @@
 const app = require('../../app/lib/index')
 const request = require('supertest')
-const Honeybadger = require('honeybadger')
-
-Honeybadger.notify = jest.fn()
 
 describe('GET wildcard.com', () => {
 	test('host is equal to root domain', async () => {
