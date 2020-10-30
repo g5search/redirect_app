@@ -1,4 +1,5 @@
-const app = require('express')()
+const express = require('express')
+const app = express()
 const redirects = require('./redirect')
 const greenlock = require('../../greenlock')
 // respond to all GET requests
@@ -22,9 +23,8 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       res.status(404).send(err.toString())
     })
 }),
-
-  app.post('/api/v1/redirects', async (req, res) => {
-    const domains = await greenlock.sites.add({
+  app.post('/api/v1/redirects', express.json(), async (req, res) => {
+    const domains = await greenlock.sites.remove({
       subject: "redirect3.tylerhasenoehrl.com",
       altnames: ["redirect3.tylerhasenoehrl.com"]
     });
