@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const redirects = require('./redirect')
 const greenlock = require('../../greenlock')
+const models = require('../models')
 // respond to all GET requests
 app.get('*', ({ path, hostname, protocol }, res) => {
   redirects
@@ -24,17 +25,37 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     })
 }),
   app.post('/api/v1/redirects', express.json(), async (req, res) => {
-    const domains = await greenlock.add({
-      subject: "redirect2.tylerhasenoehrl.com",
-      altnames: ["redirect2.tylerhasenoehrl.com"]
-    });
-    console.log(domains)
+    const { body } = req
+    for(let i = 0; i < body.length; i++) {
+      const {
+        domain,
+        path,
+        destination,
+        secure_destination,
+        wildcard
+      } = body[i]
+
+      const domains = await greenlock.add({
+        subject: domain,
+        altnames: [domain]
+      })
+      const dbDomain = await models.domain.findOrCreate({
+        where: { domain },
+        defaults: { domain }
+      })
+      const redirect = await models.redirect.create({
+        domain_id: dbDomain.dataValues.id,
+        path,
+        destination,
+        secure_destination,
+        wildcard
+      })
+    }
     res.sendStatus(200)
   })
   app.delete('/api/v1/redirects', express.json(), async (req, res) => {
-    const domains = await greenlock.manager.remove({
-      subject: "redirect2.tylerhasenoehrl.com"
-    });
+    const { domain } = req.body
+    const domains = await greenlock.manager.remove({ subject: domain })
     console.log(domains)
     res.sendStatus(200)
   })

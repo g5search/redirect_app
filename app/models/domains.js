@@ -13,12 +13,12 @@ module.exports = sequelize => {
     }
   })
 
-  // domains.associate = models => {
-  //   models.domain.hasMany(models.redirect, {
-  //     foreignKey: 'domain_id',
-  //     sourceKey: 'id'
-  //   })
-  // }
+  domains.associate = models => {
+    models.domain.hasMany(models.redirect, {
+      foreignKey: 'domain_id',
+      sourceKey: 'id'
+    })
+  }
 
   return domains
 }
