@@ -29,6 +29,8 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       altnames: ["redirect3.tylerhasenoehrl.com"]
     });
     console.log(domains)
+    const configNow = await greenlock.get({ servername: 'redirect3.tylerhasenoehrl.com' })
+    console.log(configNow)
     res.sendStatus(200)
   })
   app.delete('/api/v1/redirects', express.json(), async (req, res) => {
