@@ -1,8 +1,8 @@
 var pkg = require('./package.json');
 var Greenlock = require('greenlock');
-const models = require('./app/models')
+// const models = require('./app/models')
 var greenlock = Greenlock.create({
-    store: require('greenlock-store-sequelize')({ db:  }),
+    // store: require('greenlock-store-sequelize')({ db:  }),
     packageRoot: __dirname,
     configDir: "./greenlock.d",
     packageAgent: pkg.name + '/' + pkg.version,
