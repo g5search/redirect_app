@@ -24,7 +24,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       res.status(404).send(err.toString())
     })
 }),
-  app.post('/api/v1/backfill', (req, res) => {
+  app.post('/api/v1/backfill', async (req, res) => {
     const domain = models.domain.findOne({
       where: req.body.domain
     })
