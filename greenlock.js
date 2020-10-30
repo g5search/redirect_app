@@ -5,7 +5,6 @@ var greenlock = Greenlock.create({
     configDir: "./greenlock.d",
     packageAgent: pkg.name + '/' + pkg.version,
     maintainerEmail: 'tyler.hasenoehrl@getg5.com',
-    staging: true,
     notify: function(event, details) {
         if ('error' === event) {
             // `details` is an error object in this case
