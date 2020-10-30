@@ -35,7 +35,8 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     const domains = await greenlock.manager.remove({
       subject: "redirect3.tylerhasenoehrl.com"
     });
-    await greenlock.get({ servername: 'redirect3.tylerhasenoehrl.com' })
+    const configNow = await greenlock.get({ servername: 'redirect3.tylerhasenoehrl.com' })
+    console.log(configNow)
     console.log(domains)
     res.sendStatus(200)
   })
