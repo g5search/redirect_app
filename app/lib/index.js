@@ -25,7 +25,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     })
 })
   app.post('/api/v1/backfill',express.json(), async (req, res) => {
-    const domains = models.domain.findAll()
+    const domains = await models.domain.findAll()
     for (let i =0; i < domains.length; i++) {
       const domain = await greenlock.add({
         subject: domains[i].dataValues.domain,
