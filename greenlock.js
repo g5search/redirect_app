@@ -1,5 +1,5 @@
 var pkg = require('./package.json');
-var Greenlock = require('greenlock');
+var Greenlock = require('@root/greenlock');
 // const models = require('./app/models')
 var greenlock = Greenlock.create({
     // store: require('greenlock-store-sequelize')({ db:  }),
