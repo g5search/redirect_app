@@ -1,4 +1,4 @@
-const { INTEGER, STRING } = require('sequelize')
+const { INTEGER, STRING, DATE } = require('sequelize')
 
 module.exports = sequelize => {
   const domains = sequelize.define('domain', {
@@ -10,6 +10,9 @@ module.exports = sequelize => {
     domain: {
       type: STRING,
       notEmpty: true
+    },
+    lastUsed: {
+      type: DATE
     }
   })
 

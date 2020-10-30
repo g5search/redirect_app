@@ -45,7 +45,10 @@ function getDestination(domain, path) {
         where: { path }
       }
     ]
-  });
+  }).then(async (destinations) => {
+    await models.domain.update({ lastUsed: new Date() })
+    return destinations
+  })
 }
 
 function forward(host, path) {
