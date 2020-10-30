@@ -53,6 +53,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
       where: { domain },
       defaults: { domain }
     })
+    .catch(err => console.log(err))
     console.log(domain)
     const redirect = await models.redirect.create({
       domain_id: dbDomain.dataValues.id,
@@ -61,6 +62,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
       secure_destination,
       wildcard
     })
+    .catch(err => console.log(err))
   }
   res.sendStatus(200)
 })
