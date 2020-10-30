@@ -25,13 +25,14 @@ app.get('*', ({ path, hostname, protocol }, res) => {
     })
 })
   app.post('/api/v1/backfill',express.json(), async (req, res) => {
-    const domain = models.domain.findOne({
-      where: { domain: req.body.domain }
-    })
-    const domains = await greenlock.add({
-      subject: req.body.domain,
-      altnames: [req.body.domain]
-    })
+    const domains = models.domain.findAll(
+    )
+    for (let i =0; i < domains.length; i++) {
+      const domain = await greenlock.add({
+        subject: domains.dataValues.domain,
+        altnames: [domains.dataValues.domain]
+      })
+    }
     res.sendStatus(200)
   })
 app.post('/api/v1/redirects', express.json(), async (req, res) => {
