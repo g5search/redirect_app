@@ -29,23 +29,14 @@ app.get('*', ({ path, hostname, protocol }, res) => {
       altnames: ["redirect3.tylerhasenoehrl.com"]
     });
     console.log(domains)
-    const configNow = await greenlock.get({ servername: 'redirect3.tylerhasenoehrl.com' })
-    console.log(configNow)
     res.sendStatus(200)
   })
   app.delete('/api/v1/redirects', express.json(), async (req, res) => {
-    try {
-      const domains = await greenlock.manager.remove({
-        subject: "redirect3.tylerhasenoehrl.com"
-      });
-      const configNow = await greenlock.get({ servername: 'redirect3.tylerhasenoehrl.com' })
-      console.log(configNow)
-      console.log(domains)
-      res.sendStatus(200)
-    } catch (error) {
-      res.json(error)
-    }
-
+    const domains = await greenlock.manager.remove({
+      subject: "redirect3.tylerhasenoehrl.com"
+    });
+    console.log(domains)
+    res.sendStatus(200)
   })
 
 module.exports = app
