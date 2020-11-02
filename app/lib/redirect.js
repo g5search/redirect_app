@@ -46,8 +46,16 @@ function getDestination(domain, path) {
       }
     ]
   }).then(async (destinations) => {
+    let srcDomain = destinations
+    try {
     console.log('getDestination', { destinations })
+    if (srcDomain.length === 0 ) {
+      srcDomain = await models.domain.findAll({ where: { domain }})
+    }
     await destinations[0].update({ lastUsed: new Date() })
+    } catch (error) {
+     console.error(error) 
+    }
     return destinations
   })
 }
