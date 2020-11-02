@@ -34,8 +34,6 @@ const getWildcards = domain =>
   }).then(async (destinations) => {
     let srcDomain = destinations
     try {
-    console.log('getWildcards', { destinations })
-    console.log(srcDomain.length)
     if (srcDomain.length === 0 ) {
       srcDomain = await models.domain.findAll({ where: { domain }})
     }
