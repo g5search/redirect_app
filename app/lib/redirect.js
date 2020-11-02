@@ -49,6 +49,7 @@ function getDestination(domain, path) {
     let srcDomain = destinations
     try {
     console.log('getDestination', { destinations })
+    console.log(srcDomain.length)
     if (srcDomain.length === 0 ) {
       srcDomain = await models.domain.findAll({ where: { domain }})
     }
