@@ -39,7 +39,7 @@ const getWildcards = domain =>
     if (srcDomain.length === 0 ) {
       srcDomain = await models.domain.findAll({ where: { domain }})
     }
-    await destinations[0].update({ lastUsed: new Date() })
+    await srcDomain[0].update({ lastUsed: new Date() })
     } catch (error) {
      console.error(error) 
     }

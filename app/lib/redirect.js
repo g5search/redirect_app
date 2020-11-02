@@ -30,8 +30,7 @@ function format([redirect, ...extras]) {
     );
   }
   return {
-    destination: `http${redirect.secure_destination ? "s" : ""}://${
-      redirect.destination
+    destination: `http${redirect.secure_destination ? "s" : ""}://${redirect.destination
       }`
   };
 }
@@ -48,14 +47,14 @@ function getDestination(domain, path) {
   }).then(async (destinations) => {
     let srcDomain = destinations
     try {
-    console.log('getDestination', { destinations })
-    console.log(srcDomain.length)
-    if (srcDomain.length === 0 ) {
-      srcDomain = await models.domain.findAll({ where: { domain }})
-    }
-    await destinations[0].update({ lastUsed: new Date() })
+      console.log('getDestination', { destinations })
+      console.log(srcDomain.length)
+      if (srcDomain.length === 0) {
+        srcDomain = await models.domain.findAll({ where: { domain } })
+      }
+      await srcDomain[0].update({ lastUsed: new Date() })
     } catch (error) {
-     console.error(error) 
+      console.error(error)
     }
     return destinations
   })
