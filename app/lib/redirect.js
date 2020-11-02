@@ -46,6 +46,7 @@ function getDestination(domain, path) {
       }
     ]
   }).then(async (destinations) => {
+    console.log('getDestination', { destinations })
     await destinations[0].update({ lastUsed: new Date() })
     return destinations
   })

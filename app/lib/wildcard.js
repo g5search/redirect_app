@@ -32,6 +32,7 @@ const getWildcards = domain =>
     ],
     order: [['updatedAt', 'DESC']]
   }).then(async (destinations) => {
+    console.log('getWildcards', { destinations })
     await destinations[0].update({ lastUsed: new Date() })
     return destinations
   })
