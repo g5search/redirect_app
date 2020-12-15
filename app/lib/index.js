@@ -36,6 +36,7 @@ app.get('*', ({ path, hostname, protocol }, res) => {
   // })
 app.post('/api/v1/redirects', express.json(), async (req, res) => {
   const { body } = req
+  console.log({ body })
   for (let i = 0; i < body.length; i++) {
     const {
       domain,
