@@ -34,6 +34,22 @@ app.get('*', ({ path, hostname, protocol }, res) => {
   //   }
   //   res.sendStatus(200)
   // })
+  app.post('/api/v1/backfill/used',express.json(), async (req, res) => {
+    const domains = await models.domain.findAll({
+      where: {
+        lastUsed: {
+          [models.Sequelize.Op.not]: null
+        }
+      }
+    })
+    for (let i =0; i < domains.length; i++) {
+      greenlock.add({
+        subject: domains[i].dataValues.domain,
+        altnames: [domains[i].dataValues.domain]
+      })
+    }
+    res.sendStatus(200)
+  })
 app.post('/api/v1/redirects', express.json(), async (req, res) => {
   const { body } = req
   console.log({ body })
