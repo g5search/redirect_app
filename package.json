@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "eslint": "^5.16.0",
+    "greenlock-manager-test": "^3.1.1",
     "jest": "^26.6.1",
     "supertest": "^3.4.2"
   }

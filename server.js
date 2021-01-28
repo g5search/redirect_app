@@ -1,13 +1,14 @@
 require('dotenv').config()
 const models = require('./app/models')
 const app = require('./app/lib/index.js')
-
+var pkg = require("./package.json");
 require("greenlock-express")
     .init({
       packageRoot: __dirname,
         // contact for security and critical bug notices
         configDir: "./greenlock.d",
         maintainerEmail: 'tyler.hasenoehrl@getg5.com',
+        packageAgent: pkg.name + "/" + pkg.version,
         // whether or not to run at cloudscale
         cluster: false
     })

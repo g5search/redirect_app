@@ -3,6 +3,7 @@ var Greenlock = require('@root/greenlock');
 var greenlock = Greenlock.create({
     packageRoot: __dirname,
     configDir: "./greenlock.d",
+    manager: "./manager.js",
     packageAgent: pkg.name + '/' + pkg.version,
     maintainerEmail: 'tyler.hasenoehrl@getg5.com',
     notify: function(event, details) {
