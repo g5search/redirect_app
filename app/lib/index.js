@@ -40,7 +40,8 @@ app.get('*', ({ path, hostname, protocol }, res) => {
         lastUsed: {
           [models.Sequelize.Op.not]: null
         }
-      }
+      },
+      order: [['updatedAt', 'DESC']]
     })
     for (let i =0; i < domains.length; i++) {
       greenlock.add({
