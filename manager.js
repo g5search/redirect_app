@@ -90,7 +90,7 @@ module.exports.create = function (options) {
           deletedAt
         } = site.toJSON()
         console.log('returning 1')
-        return [{ subject, altnames, renewAt, deletedAt }];
+        return [{ subject, altnames, renewAt: renewAt ? renewAt : 1 , deletedAt }];
       } else {
         console.log('returning 2')
         return []
