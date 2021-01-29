@@ -73,12 +73,12 @@ module.exports.create = function (options) {
     console.log('find')
     console.log('opts', opts)
     // { subject, servernames, altnames, renewBefore }
-    console.log('subject 1', opts.subject)
+    console.log('servername 1', opts.servername)
     if (opts.subject) {
-      console.log('subject 2', opts.subject)
+      console.log('servername 2', opts.servername)
       const site = await models.site.findOne({
         where: {
-          servername: opts.subject
+          servername: opts.servername
         }
       })
       if (site) {
