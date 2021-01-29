@@ -22,7 +22,7 @@ models.sequelize
   .then(() => {
     console.log("Models Sync'd")
   })
-  .catch(console.error)
+  .catch(e => console.error(e))
 
 // [SECURITY]
 // Since v2.4.0+ Greenlock proactively protects against
