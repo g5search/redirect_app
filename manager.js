@@ -33,13 +33,13 @@ module.exports.create = function (options) {
     const site = await models.site.findOne({ where: { servername } })
     if (site) {
       const {
-        servername: subject,
+        servername,
         altnames,
         renewAt,
         deletedAt,
         challenges
       } = site.toJSON()
-      return { subject, altnames, renewAt: renewAt ? renewAt : 1 , deletedAt, challenges }
+      return { servername, altnames, renewAt: renewAt ? renewAt : 1 , deletedAt, challenges }
     } else {
       return null
     }
@@ -103,12 +103,12 @@ module.exports.create = function (options) {
         }
       }).then(s => s.map((s) => {
         const {
-          servername: subject,
+          servername,
           altnames,
           renewAt,
           deletedAt
         } = s.toJSON()
-        return { subject, altnames, renewAt, deletedAt }
+        return { servername, altnames, renewAt, deletedAt }
       }))
       return sites
     }
