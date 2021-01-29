@@ -81,15 +81,18 @@ module.exports.create = function (options) {
           servername: opts.servername
         }
       })
+      console.log('site', site)
       if (site) {
         const {
-          servername: subject,
+          servername,
           altnames,
           renewAt,
           deletedAt
         } = site.toJSON()
-        return [{ subject, altnames, renewAt, deletedAt }];
+        console.log('returning 1')
+        return [{ servername, altnames, renewAt, deletedAt }];
       } else {
+        console.log('returning 2')
         return []
       }
     }
