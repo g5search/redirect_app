@@ -131,12 +131,12 @@ module.exports.create = function (options) {
   // Optional (special settings save)
   // Implemented here because this module IS the fallback
   //
-  manager.defaults = async function (options) {
-    if (!options) {
-      return defaults
-    }
-    return mergeDefaultConfigValues(options);
-  };
+  // manager.defaults = async function (options) {
+  //   if (!options) {
+  //     return defaults
+  //   }
+  //   return mergeDefaultConfigValues(options);
+  // };
 
   function mergeDefaultConfigValues(options) {
 
