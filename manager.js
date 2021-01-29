@@ -90,31 +90,31 @@ module.exports.create = function (options) {
           deletedAt
         } = site.toJSON()
         console.log('returning 1')
-        return [{ subject, altnames, renewAt: renewAt ? renewAt : 1 , deletedAt }];
+        return [{ subject, altnames: [subject], renewAt: renewAt ? renewAt : 1 , deletedAt }];
       } else {
         console.log('returning 2')
         return []
       }
     }
 
-    if (opts.servernames) {
-      const sites = await models.site.findAll({
-        where: {
-          altnames: {
-            [Op.contains]: opts.servernames
-          }
-        }
-      }).then(s => s.map((s) => {
-        const {
-          servername,
-          altnames,
-          renewAt,
-          deletedAt
-        } = s.toJSON()
-        return { servername, altnames, renewAt, deletedAt }
-      }))
-      return sites
-    }
+    // if (opts.servernames) {
+    //   const sites = await models.site.findAll({
+    //     where: {
+    //       altnames: {
+    //         [Op.contains]: opts.servernames
+    //       }
+    //     }
+    //   }).then(s => s.map((s) => {
+    //     const {
+    //       servername,
+    //       altnames,
+    //       renewAt,
+    //       deletedAt
+    //     } = s.toJSON()
+    //     return { servername, altnames, renewAt, deletedAt }
+    //   }))
+    //   return sites
+    // }
     return getSitestoRenew(opts.renewBefore || Infinity)
   };
 
