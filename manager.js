@@ -39,7 +39,7 @@ module.exports.create = function (options) {
         deletedAt,
         challenges
       } = site.toJSON()
-      return { servername, altnames, renewAt: renewAt ? renewAt : 1 , deletedAt, challenges }
+      return { subject: servername, altnames: [ servername ], renewAt: renewAt ? renewAt : 1 , deletedAt, challenges }
     } else {
       return null
     }
@@ -175,7 +175,7 @@ async function getSitestoRenew(renewAt) {
         renewAt,
         deletedAt
       } = s.toJSON()
-      return { subject, altnames, renewAt, deletedAt }
+      return { subject, altnames: [ subject ], renewAt, deletedAt }
     }))
     console.log(sites)
     return sites
