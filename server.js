@@ -2,7 +2,17 @@ require('dotenv').config()
 const models = require('./app/models')
 const app = require('./app/lib/index.js')
 var pkg = require("./package.json");
-
+const {
+  DATABASE_URL: dburl,
+  DATABASE_MAX_CONNECTIONS: max,
+  DATABASE_MIN_CONNECTIONS: min,
+  DATABASE_IDLE: idle,
+  DATABASE_AQUIRE: acquire,
+  DATABASE_EVICT: evict,
+  DATABASE_SSL: ssl,
+  DATABASE_LOGGING: logging,
+} = process.env
+console.log({ dburl, max, min, idle, acquire, evict, ssl, logging })
 // Sync the Database
 models.sequelize
   .sync()
