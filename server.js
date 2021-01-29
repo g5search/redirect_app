@@ -21,7 +21,7 @@ models.sequelize
   })
   .catch(e => console.error(e))
 
-require("greenlock-express")
+require("@root/greenlock-express")
   .init({
     packageRoot: __dirname,
     // contact for security and critical bug notices
