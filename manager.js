@@ -39,7 +39,7 @@ module.exports.create = function (options) {
         deletedAt,
         challenges
       } = site.toJSON()
-      return { subject, altnames, renewAt, deletedAt, challenges }
+      return { subject, altnames, renewAt: renewAt ? renewAt : 1 , deletedAt, challenges }
     } else {
       return null
     }
