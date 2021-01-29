@@ -21,19 +21,19 @@ models.sequelize
   })
   .catch(e => console.error(e))
 
-// require("greenlock-express")
-//   .init({
-//     packageRoot: __dirname,
-//     // contact for security and critical bug notices
-//     configDir: "./greenlock.d",
-//     maintainerEmail: 'tyler.hasenoehrl@getg5.com',
-//     packageAgent: pkg.name + "/" + pkg.version,
-//     // whether or not to run at cloudscale
-//     cluster: false
-//   })
-//   // Serves on 80 and 443
-//   // Get's SSL certificates magically!
-//   .serve(app);
+require("greenlock-express")
+  .init({
+    packageRoot: __dirname,
+    // contact for security and critical bug notices
+    configDir: "./greenlock.d",
+    maintainerEmail: 'tyler.hasenoehrl@getg5.com',
+    packageAgent: pkg.name + "/" + pkg.version,
+    // whether or not to run at cloudscale
+    cluster: false
+  })
+  // Serves on 80 and 443
+  // Get's SSL certificates magically!
+  .serve(app);
 
 // [SECURITY]
 // Since v2.4.0+ Greenlock proactively protects against
