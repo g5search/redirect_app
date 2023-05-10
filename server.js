@@ -1,57 +1,42 @@
-const envFileName = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
-require('dotenv').config({ path: envFileName });
-
+require('dotenv').config()
+const models = require('./app/models')
+const app = require('./app/lib/index.js')
+var pkg = require("./package.json");
 const {
-  GREENLOCK_SERVER,
-  GREENLOCK_DIR,
-  GREENLOCK_EMAIL,
-  GREENLOCK_AGREETOS,
-  GREENLOCK_COMMUNITYMEMBER,
-  GREENLOCK_DEBUG
-} = process.env;
+  DATABASE_URL: dburl,
+  DATABASE_MAX_CONNECTIONS: max,
+  DATABASE_MIN_CONNECTIONS: min,
+  DATABASE_IDLE: idle,
+  DATABASE_AQUIRE: acquire,
+  DATABASE_EVICT: evict,
+  DATABASE_SSL: ssl,
+  DATABASE_LOGGING: logging,
+} = process.env
+console.log({ dburl, max, min, idle, acquire, evict, ssl, logging })
+// Sync the Database
+models.sequelize
+  .sync()
+  .then(() => {
+    console.log("Models Sync'd")
+  })
+  .catch(e => console.error(e))
 
-const greenlockExpress = require('greenlock-express');
-const models = require('./app/models');
-const webServer = require('./app/lib/index');
+require("@root/greenlock-express")
+  .init({
+    packageRoot: __dirname,
+    // contact for security and critical bug notices
+    configDir: "./greenlock.d",
+    maintainerEmail: 'tyler.hasenoehrl@getg5.com',
+    packageAgent: pkg.name + "/" + pkg.version,
+    // whether or not to run at cloudscale
+    cluster: false
+  })
+  // Serves on 80 and 443
+  // Get's SSL certificates magically!
+  .serve(app);
 
-models.sequelize.sync().then(function () {
-  const server = glx.listen(80, 443);
-  server.on('listening', function () {
-    console.info(server.type + ' listening on', server.address());
-  });
-}).catch(function (err) {
-  console.log('Something is wrong with the database connection!', err);
-});
-
-// TODO this function will be invoked differently in version 4
-const glx = greenlockExpress.create({
-  version: 'draft-11',            // AKA Let's Encrypt v2
-  server: GREENLOCK_SERVER,       // If at first you don't succeed, stop and switch to staging
-  configDir: GREENLOCK_DIR,       // Write access to dir required by app user
-  approveDomains: approveDomains, // Greenlock wraps around tls.SNICallback
-  app: function (req, res) {
-    return webServer(req, res);
-  },
-  email: GREENLOCK_EMAIL,
-  agreeTos: GREENLOCK_AGREETOS === 'true',                 
-  communityMember: GREENLOCK_COMMUNITYMEMBER === 'true',
-  debug: GREENLOCK_DEBUG === 'true'
-});
-
-/**
- * Gets all matching domains and feeds them into the TLS callback
- * @param {Object} opts
- * @param {*} certs
- * @param {Function} cb
- * @returns cb
- */
-async function approveDomains (opts, certs, cb) {
-  const domain = await models.domain.findAll({
-    where: { domain: opts.domain }
-  });
-  if (domain.length > 0) {
-    return cb(null, { options: opts, certs: certs });
-  } else {
-    return cb(new Error(`No entries found for ${opts.domain}`), null);
-  }
-}
+// [SECURITY]
+// Since v2.4.0+ Greenlock proactively protects against
+// SQL injection and timing attacks by rejecting invalid domain names,
+// but it's up to you to make sure that you accept opts.domain BEFORE
+// an attempt is made to issue a certificate for it.

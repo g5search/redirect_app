@@ -1,50 +1,63 @@
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
+const fs = require('fs')
+const path = require('path')
+const Sequelize = require('sequelize')
 
 const {
-  DATABASE_URL,
-  DATABASE_MAX_CONNECTIONS,
-  DATABASE_MIN_CONNECTIONS,
-  DATABASE_IDLE,
-  DATABASE_AQUIRE,
-  DATABASE_EVICT,
-  DATABASE_SSL
-} = process.env;
+  DATABASE_URL: dburl,
+  DATABASE_MAX_CONNECTIONS: max,
+  DATABASE_MIN_CONNECTIONS: min,
+  DATABASE_IDLE: idle,
+  DATABASE_AQUIRE: acquire,
+  DATABASE_EVICT: evict,
+  DATABASE_SSL: ssl,
+  DATABASE_LOGGING: logging,
+} = process.env
 
-const sequelize = new Sequelize(DATABASE_URL, {
+const minTest = parseInt(min)
+const maxTest = parseInt(max)
+const idleTest = parseInt(idle)
+const acquireTest = parseInt(acquire)
+const evictTest = parseInt(evict)
+const sequelize = new Sequelize(dburl, {
   pool: {
-    max: DATABASE_MAX_CONNECTIONS,
-    min: DATABASE_MIN_CONNECTIONS,
-    idle: DATABASE_IDLE,
-    acquire: DATABASE_AQUIRE,
-    evict: DATABASE_EVICT,
+    max: maxTest,
+    min: minTest,
+    idle: idleTest,
+    acquire: acquireTest,
+    evict: evictTest
   },
   dialectOptions: {
-    ssl: DATABASE_SSL === 'true'
-  }
-});
-
-const db = {};
-
-fs
-  .readdirSync(__dirname)
-  .filter(function (file) {
-    return (file.indexOf('.') !== 0) && (file !== 'index.js')
-  })
-  .forEach(function (file) {
-    const model = sequelize.import(path.join(__dirname, file))
-    db[model.name] = model
-  })
-
-Object.keys(db).forEach(function (modelName) {
-  if ('associate' in db[modelName]) {
-    db[modelName].associate(db)
-  }
+    ssl: (ssl === 'true') ? { ca, cert, key } : false
+  },
+  logging: (logging === 'true')
 })
 
 
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+const db = {}
 
-module.exports = db
+fs.readdirSync(__dirname)
+  .filter(file => file.indexOf('.') !== 0 &&
+                  file !== 'index.js' &&
+                  file !== 'sync.js' &&
+                  file !== 'prototypes' &&
+                  file !== 'hooks' &&
+                  file !== 'README.md'
+  )
+  .forEach((file) => {
+    const model = require(path.join(__dirname, file))(sequelize)
+    const { name } = model
+    db[name] = model
+  })
+
+Object.keys(db)
+  .forEach((modelName) => {
+    if ('associate' in db[modelName]) {
+      db[modelName].associate(db)
+    }
+  })
+
+module.exports = {
+  ...db,
+  sequelize,
+  Sequelize
+}

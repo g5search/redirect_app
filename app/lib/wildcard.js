@@ -1,50 +1,49 @@
-const models = require('../models');
+const models = require('../models')
 
-module.exports = {
-  getDestination
-};
+let getDestination = async (host, path) => {
+  const [wildcard] = await getWildcards(host)
+  if (typeof wildcard == 'undefined') {
+    return
+  }
 
-/**
- * Finds and formats wildcards as paths for request path pattersn and host
- * @param {string} host
- * @param {string} path
- * @returns {undefined | {domain: string, redirects: [string]}}
- */
-async function getDestination (host, path) {
-  const wildcards = await getWildcards(host);
-
-  if (wildcards.length > 0) {
-    for (let i = 0; i < wildcards[0].redirects.length; i++) {
-      let redirect_path = wildcards[0].redirects[i].path;
-      if (redirect_path.charAt(redirect_path.length - 1) !== '/') {
-        redirect_path = redirect_path + '/';
-      }
-      if (path.indexOf(redirect_path) >= 0) {
-        return {
-          domain: wildcards[0].domain,
-          redirects: [
-            wildcards[0].redirects[i].dataValues
-          ]
-        };
+  for (const redirect of wildcard.redirects) {
+    let redirectPath = redirect.path
+    if (redirectPath.split('').pop() !== '/') {
+      redirectPath += '/'
+    }
+    if (path.includes(redirectPath)) {
+      return {
+        domain: wildcard.domain,
+        redirects: [redirect.dataValues]
       }
     }
   }
-
-  return;
+  throw new Error('No matching redirect found')
 }
 
-/**
- * Returns wildcard redirect records for a given host
- * @param {String} host 
- * @returns {Array}
- */
-async function getWildcards (host) {
-  return await models.domain.findAll({
-    where: { domain: host },
-    include: [{
-      model: models.redirect,
-      where: { wildcard: true }
-    }],
+const getWildcards = domain =>
+  models.domain.findAll({
+    where: { domain },
+    include: [
+      {
+        model: models.redirect,
+        where: { wildcard: true }
+      }
+    ],
     order: [['updatedAt', 'DESC']]
-  });
+  }).then(async (destinations) => {
+    let srcDomain = destinations
+    try {
+    if (srcDomain.length === 0 ) {
+      srcDomain = await models.domain.findAll({ where: { domain }})
+    }
+    await srcDomain[0].update({ lastUsed: new Date() })
+    } catch (error) {
+     console.error(error) 
+    }
+    return destinations
+  })
+
+module.exports = {
+  getDestination
 }
