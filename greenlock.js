@@ -1,26 +1,22 @@
-var pkg = require('./package.json');
-var Greenlock = require('@root/greenlock');
-var greenlock = Greenlock.create({
-    packageRoot: __dirname,
-    configDir: "./greenlock.d",
-    manager: "./manager.js",
-    packageAgent: pkg.name + '/' + pkg.version,
-    maintainerEmail: 'tyler.hasenoehrl@getg5.com',
-    notify: function(event, details) {
-        if ('error' === event) {
-            // `details` is an error object in this case
-            console.error(details);
-        }
+const Greenlock = require('@root/greenlock');
+const pkg = require('./package.json');
+
+const {
+  GREENLOCK_MAINTAINER_EMAIL,
+  GREENLOCK_DIR
+} = process.env;
+
+const greenlock = Greenlock.create({
+  packageRoot: __dirname,
+  configDir: GREENLOCK_DIR,
+  manager: './manager.js',
+  packageAgent: `${pkg.name}/${pkg.version}`,
+  maintainerEmail: GREENLOCK_MAINTAINER_EMAIL,
+  notify: function(event, details) {
+    if ('error' === event) {
+      console.warn(details);
     }
+  }
 });
 
-// greenlock.manager
-//     .defaults({
-//         agreeToTerms: true,
-//         subscriberEmail: 'webhosting@example.com'
-//     })
-//     .then(function(fullConfig) {
-//         // ...
-//     });
-
-module.exports = greenlock
+module.exports = greenlock;
