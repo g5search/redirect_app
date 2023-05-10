@@ -1,23 +1,25 @@
 {
   "name": "redirect_app",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "A redirect service for incoming secure domain requests using DNS-validated SSLs",
   "main": "server.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "start": "NODE_ENV=production node ./server.js",
+    "dev": "NODE_ENV=staging nodemon ./server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tylrhas/redirect_app.git"
+    "url": "git+https://github.com/g5search/redirect_app.git"
   },
   "author": "Tyler Hasenoehrl",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Tylrhas/redirect_app/issues"
+    "url": "https://github.com/g5search/redirect_app/issues"
   },
-  "homepage": "https://github.com/Tylrhas/redirect_app#readme",
+  "homepage": "https://github.com/g5search/redirect_app#readme",
   "dependencies": {
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
@@ -29,6 +31,7 @@
   "devDependencies": {
     "eslint": "^5.6.1",
     "jest": "^23.6.0",
+    "nodemon": "^2.0.22",
     "supertest": "^3.3.0"
   }
 }
