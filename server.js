@@ -1,53 +1,57 @@
-require('dotenv').config()
-var models = require('./app/models')
+const envFileName = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+require('dotenv').config({ path: envFileName });
 
-//Sync the Database
+const {
+  GREENLOCK_SERVER,
+  GREENLOCK_DIR,
+  GREENLOCK_EMAIL,
+  GREENLOCK_AGREETOS,
+  GREENLOCK_COMMUNITYMEMBER,
+  GREENLOCK_DEBUG
+} = process.env;
+
+const greenlockExpress = require('greenlock-express');
+const models = require('./app/models');
+const webServer = require('./app/lib/index');
+
 models.sequelize.sync().then(function () {
-  console.log('Nice! Database looks fine')
-  
-  // start the servers only if you are connected to a database
-  var server = glx.listen(80, 443);
+  const server = glx.listen(80, 443);
   server.on('listening', function () {
-    console.info(server.type + " listening on", server.address());
+    console.info(server.type + ' listening on', server.address());
   });
-
 }).catch(function (err) {
-  console.log(err, "Something went wrong with the Database Connection!")
+  console.log('Something is wrong with the database connection!', err);
 });
 
-var glx = require('greenlock-express').create({
-  version: 'draft-11',                                // Let's Encrypt v2 is ACME draft 11
-  server: process.env.GREENLOCK_SERVER,              // If at first you don't succeed, stop and switch to staging
-  configDir: process.env.GREENLOCK_DIR,             // You MUST have access to write to directory where certs are saved.
-  approveDomains: approveDomains,                  // Greenlock's wraps around tls.SNICallback. Check the domain name here and reject invalid ones
+// TODO this function will be invoked differently in version 4
+const glx = greenlockExpress.create({
+  version: 'draft-11',            // AKA Let's Encrypt v2
+  server: GREENLOCK_SERVER,       // If at first you don't succeed, stop and switch to staging
+  configDir: GREENLOCK_DIR,       // Write access to dir required by app user
+  approveDomains: approveDomains, // Greenlock wraps around tls.SNICallback
   app: function (req, res) {
-    require('./app/lib/index.js')(req, res)
+    return webServer(req, res);
   },
-  email: process.env.GREENLOCK_EMAIL,                                     // Email for Let's Encrypt account and Greenlock Security
-  agreeTos: (process.env.GREENLOCK_AGREETOS == "true"),                  // Accept Let's Encrypt ToS
-  communityMember: (process.env.GREENLOCK_COMMUNITYMEMBER == "true"),   // Join Greenlock to get important updates, no spam
-  debug: (process.env.GREENLOCK_DEBUG == "true")
+  email: GREENLOCK_EMAIL,
+  agreeTos: GREENLOCK_AGREETOS === 'true',                 
+  communityMember: GREENLOCK_COMMUNITYMEMBER === 'true',
+  debug: GREENLOCK_DEBUG === 'true'
 });
 
-// [SECURITY]
-// Since v2.4.0+ Greenlock proactively protects against
-// SQL injection and timing attacks by rejecting invalid domain names,
-// but it's up to you to make sure that you accept opts.domain BEFORE
-// an attempt is made to issue a certificate for it.
-async function approveDomains(opts, certs, cb) {
-
-  // Check that the hosting domain exists in the database.
-  var domain = await models.domain.findAll({
-    where: {
-      domain: opts.domain
-    }
-  })
+/**
+ * Gets all matching domains and feeds them into the TLS callback
+ * @param {Object} opts
+ * @param {*} certs
+ * @param {Function} cb
+ * @returns cb
+ */
+async function approveDomains (opts, certs, cb) {
+  const domain = await models.domain.findAll({
+    where: { domain: opts.domain }
+  });
   if (domain.length > 0) {
-    // the domain is in the database proceed
-    cb(null, { options: opts, certs: certs });
+    return cb(null, { options: opts, certs: certs });
   } else {
-    // error callback
-    cb(new Error('no config found for ' + opts.domain))
-    return;
+    return cb(new Error(`No entries found for ${opts.domain}`), null);
   }
 }

@@ -1,34 +1,32 @@
-var express = require('express')
-var app = express()
-var helmet = require('helmet')
-module.exports = app
-// disable for security 
-app.use(helmet())
+const express = require('express');
+const app = express();
+const helmet = require('helmet');
 
-var redirects = require('./redirect')
+module.exports = app;
 
-// repond to all GET requests
-app.get('*', redirect)
+app.use(helmet());
 
-async function redirect(req, res) {
-  var path = req.path
-  var host = req.hostname
-  var protocol = req.protocol
-  var reqURL = protocol + '://' + host + path
+const redirects = require('./redirect');
 
-  console.info('received request for ' + reqURL)
+app.get('*', redirect);
 
-  // query the database for the url and its destination
-  var redirect = await redirects.get(protocol, host, path)
+async function redirect (req, res) {
+  const path = req.path;
+  const host = req.hostname;
+  const protocol = req.protocol;
+  const reqURL = `${protocol}://${host}${path}`;
+
+  console.info(`Received request for ${reqURL}`);
+
+  const redirect = await redirects.get(protocol, host, path);
+
   if ('destination' in redirect) {
-    // check for redirect loop
     if (redirect.destination !== reqURL) {
-      res.redirect(301, redirect.destination)
+      res.redirect(301, redirect.destination);
     } else {
-      res.send(host + ' is incorrectly configured creating a redirect loop')
+      res.send(`${host} is incorrectly configured creating a redirect loop.`);
     }
   } else {
-    // send error
-    res.send(redirect.error)
+    res.send(redirect.error);
   }
 }

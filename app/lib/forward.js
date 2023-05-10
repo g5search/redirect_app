@@ -1,23 +1,17 @@
-module.exports = {
-	go
-}
 /**
- *
- *
+ * Ensures only approriate domains are processed by this tool
  * @param {string} host
  * @param {string} path
  * @returns {{error ?: string, destination: string}}
  */
-function go(host, path) {
-	// check root domain is the same as the host
-	var rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/)
-	// forward to the http://www. incase a site went live without an SSL attached
-	var newURL = 'http://www.' + host + path
-	if (rootdomain[0] === host) {
-		// add WWW and forward
-		return { destination: newURL }
-	} else {
-		// return error because this is a subdomain and we will not handle forwarding for it
-		return { error: 'Redirects are not configured for this subdomain' }
-	}
-}
+module.exports = function go (host, path) {
+  const rootdomain = host.match(/[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/);
+  const newURL = `http://www.${host}${path}`;
+  console.warn(`${newURL} is currently an insecure URL; Please ensure an SSL is attached in the Provisioner.`);
+  if (rootdomain[0] === host) {
+    console.warn(`${newURL} is a same-domain redirect; This should be moved to the CMS Redirects Manager.`);
+    return { destination: newURL };
+  } else {
+    return { error: 'No Redirect Destinations found for this requested domain.' };
+  }
+};
