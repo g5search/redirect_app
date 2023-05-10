@@ -7,7 +7,7 @@ module.exports = {
     jest: true
   },
   extends: 'eslint:recommended',
-  parserOptions: { ecmaVersion: 2017 },
+  parserOptions: { ecmaVersion: 2018 },
   rules: {
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
