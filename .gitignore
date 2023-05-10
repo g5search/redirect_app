@@ -1,5 +1,6 @@
 node_modules
 .env
+.env.test
 LightsailDefaultPrivateKey-us-west-2.pem
 .DS_Store
 coverage
