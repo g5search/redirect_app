@@ -24,7 +24,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
   dialectOptions: {
     ssl: DATABASE_SSL === 'true'
   },
-  logging: DATABASE_LOGGING === 'true'
+  logging: DATABASE_LOGGING === 'true' ? console.log : false
 });
 
 const db = {};

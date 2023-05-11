@@ -1,27 +1,27 @@
-const models = require('../models')
+const models = require('../models');
 
-let getDestination = async (host, path) => {
-  const [wildcard] = await getWildcards(host)
+const getDestination = async (host, path) => {
+  const [wildcard] = await getWildcards(host);
   if (typeof wildcard == 'undefined') {
-    return
+    return;
   }
 
   for (const redirect of wildcard.redirects) {
-    let redirectPath = redirect.path
+    let redirectPath = redirect.path;
     if (redirectPath.split('').pop() !== '/') {
-      redirectPath += '/'
+      redirectPath += '/';
     }
     if (path.includes(redirectPath)) {
       return {
         domain: wildcard.domain,
         redirects: [redirect.dataValues]
-      }
+      };
     }
   }
-  throw new Error('No matching redirect found')
-}
+  throw new Error('No matching redirect found');
+};
 
-const getWildcards = domain =>
+const getWildcards = (domain) => {
   models.domain.findAll({
     where: { domain },
     include: [
@@ -32,18 +32,19 @@ const getWildcards = domain =>
     ],
     order: [['updatedAt', 'DESC']]
   }).then(async (destinations) => {
-    let srcDomain = destinations
+    let srcDomain = destinations;
     try {
-    if (srcDomain.length === 0 ) {
-      srcDomain = await models.domain.findAll({ where: { domain }})
-    }
-    await srcDomain[0].update({ lastUsed: new Date() })
+      if (srcDomain.length === 0 ) {
+        srcDomain = await models.domain.findAll({ where: { domain } });
+      }
+      await srcDomain[0].update({ lastUsed: new Date() });
     } catch (error) {
-     console.error(error) 
+      console.error(error);
     }
-    return destinations
-  })
+    return destinations;
+  });
+};
 
 module.exports = {
   getDestination
-}
+};

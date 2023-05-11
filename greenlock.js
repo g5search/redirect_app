@@ -12,7 +12,7 @@ const greenlock = Greenlock.create({
   manager: './manager.js',
   packageAgent: `${pkg.name}/${pkg.version}`,
   maintainerEmail: GREENLOCK_MAINTAINER_EMAIL,
-  notify: function(event, details) {
+  notify: function (event, details) {
     if ('error' === event) {
       console.warn(details);
     }

@@ -8,6 +8,7 @@ const pkg = require('./package.json');
 
 models.sequelize
   .sync()
+  .then(() => { console.log('DB Synced'); })
   .catch(e => console.error(e));
 
 greenlock

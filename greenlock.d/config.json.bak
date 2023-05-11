@@ -12,7 +12,7 @@
     "renewStagger": "3d",
     "accountKeyType": "EC-P256",
     "serverKeyType": "RSA-2048",
-    "subscriberEmail": "tyler.hasenoehrl@getg5.com",
+    "subscriberEmail": "g5devops@getg5.com",
     "agreeToTerms": true
   },
   "sites": [

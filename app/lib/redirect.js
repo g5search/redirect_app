@@ -1,17 +1,17 @@
-const wildcard = require("./wildcard");
-const models = require("../models");
+const wildcard = require('./wildcard');
+const models = require('../models');
+
 /**
- *
  *
  * @param {*} host
  * @param {*} path
  * @returns {{destination: string}}
  */
-async function get(host, path) {
+async function get (host, path) {
   const destinations = await getDestination(host, path);
 
   if (destinations.length > 1) {
-    throw new Error("multiple domains have been found");
+    throw new Error('multiple domains have been found');
   }
 
   if (destinations.length === 1) {
@@ -30,12 +30,11 @@ function format([redirect, ...extras]) {
     );
   }
   return {
-    destination: `http${redirect.secure_destination ? "s" : ""}://${redirect.destination
-      }`
+    destination: `http${redirect.secure_destination ? 's' : ''}://${redirect.destination}`
   };
 }
 
-function getDestination(domain, path) {
+function getDestination (domain, path) {
   return models.domain.findAll({
     where: { domain },
     include: [
@@ -45,28 +44,28 @@ function getDestination(domain, path) {
       }
     ]
   }).then(async (destinations) => {
-    let srcDomain = destinations
+    let srcDomain = destinations;
     try {
       if (srcDomain.length === 0) {
-        srcDomain = await models.domain.findAll({ where: { domain } })
+        srcDomain = await models.domain.findAll({ where: { domain } });
       }
-      await srcDomain[0].update({ lastUsed: new Date() })
+      await srcDomain[0].update({ lastUsed: new Date() });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-    return destinations
-  })
+    return destinations;
+  });
 }
 
-function forward(host, path) {
+function forward (host, path) {
   // check root domain is the same as the host
-  var [rootdomain] = host.match(
+  const [rootdomain] = host.match(
     /[^.]+(?:(?:[.](?:com|co|org|net|edu|gov)[.][^.]{2})|([.][^.]+))$/
   );
   // forward to the http://www. incase a site went live without an SSL attached
-  if (rootdomain !== host)
-    throw new Error("Redirects are not configured for this subdomain");
-
+  if (rootdomain !== host) {
+    throw new Error('Redirects are not configured for this subdomain');
+  }
   return { destination: `http://www.${host}${path}` };
 }
 
