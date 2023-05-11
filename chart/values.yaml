@@ -1,0 +1,87 @@
+global: 
+  applicationName: domain-forwarder
+  region: us-central1
+node-web-service:
+  disableHealthChecking: false
+  database:
+    enabled: true
+  image:
+    name: gcr.io/g5-images/redirect-app
+  isInternetFacing:  false
+  hasMetrics: false
+  replicaCount: 2
+  revisionHistoryLimit: 1
+  command: [ "node", "server.js" ]
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 200m
+  configurations:
+    production:
+      configMapData:
+        GREENLOCK_DEBUG: false
+        NODE_ENV: production
+        DATABASE_LOGGING: false
+        GREENLOCK_MAINTAINER_EMAIL: g5devops@getg5.com
+    prime:
+      configMapData:
+        GREENLOCK_DEBUG: false
+        NODE_ENV: prime
+        DATABASE_LOGGING: false
+        GREENLOCK_MAINTAINER_EMAIL: g5devops@getg5.com
+    staging:
+      configMapData:
+        GREENLOCK_DEBUG: true
+        NODE_ENV: staging
+        DATABASE_LOGGING: true
+        GREENLOCK_MAINTAINER_EMAIL: g5devops@getg5.com
+  env:
+    - name: NODE_ENV
+      valueFrom:
+        configMapKeyRef:
+          name: domain-forwarder
+          key: NODE_ENV
+    - name: GREENLOCK_DEBUG
+      valueFrom:
+        configMapKeyRef:
+          name: domain-forwarder
+          key: GREENLOCK_DEBUG
+    - name: GREENLOCK_DIR
+      value: "./greenlock.d"
+    - name: GREENLOCK_MAINTAINER_EMAIL
+      valueFrom:
+        configMapKeyRef:
+          name: domain-forwarder
+          key: GREENLOCK_MAINTAINER_EMAIL
+    - name: GREENLOCK_AGREETOS
+      value: "true"
+    - name: GREENLOCK_COMMUNITYMEMBER
+      value: "true"
+    - name: DATABASE_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: domain-forwarder-a-sqluser-password
+          key: password
+    - name: DATABASE_MAX_CONNECTIONS
+      value: "150"
+    - name: DATABASE_MIN_CONNECTIONS
+      value: "0"
+    - name: DATABASE_DIALECT
+      value: postgres
+    - name: DATABASE_IDLE
+      value: "10000"
+    - name: DATABASE_AQUIRE
+      value: "10000"
+    - name: DATABASE_EVICT
+      value: "10000"
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: DATABASE_SSL
+      value: "false"
+    - name: DATABASE_LOGGING
+      valueFrom:
+        configMapKeyRef:
+          name: domain-forwarder
+          key: DATABASE_LOGGING
+    - name: DATABASE_URL
+      value: $(DATABASE_DIALECT)://$(DATABASE_USER):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
