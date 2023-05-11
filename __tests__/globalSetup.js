@@ -1,10 +1,8 @@
-// set up a table in the DB with some seed data
 module.exports = async function () {
-  require('dotenv').config()
-  var models = require('../app/models')
-  console.log('here')
-  await models.sequelize.sync()
-  var seedInfo = [
+  require('dotenv').config();
+  const models = require('../app/models');
+  await models.sequelize.sync();
+  const seedInfo = [
     {
       domain_table: {
         domain: 'forward.com',
@@ -123,15 +121,14 @@ module.exports = async function () {
         path: '/wildcard/',
       }
     }
-  ]
+  ];
+
   for (const { redirect_table, domain_table } of seedInfo) {
-    var domain = await models.domain.create(domain_table)
-    // set the domain id for the redirect_table
+    const domain = await models.domain.create(domain_table);
     if (redirect_table !== null) {
-      redirect_table.domain_id = domain.id
-      // seed the redirect table with the correct domain id
-      await models.redirect.create(redirect_table)
+      redirect_table.domain_id = domain.id;
+      await models.redirect.create(redirect_table);
     }
   }
-  global.__db__ = models.sequelize
-}
+  global.__db__ = models.sequelize;
+};
