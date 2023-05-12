@@ -16,6 +16,7 @@ const greenlock = Greenlock.create({
     if ('error' === event) {
       console.warn(details);
     }
+    console.info({ event, details });
   }
 });
 

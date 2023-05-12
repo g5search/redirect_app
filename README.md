@@ -75,4 +75,4 @@ If they're redirecting an apex/root domain and do not have a registrar that supp
  - Tail the logs 
 	 - > pm2 logs redirectApp
    
-
+  helm upgrade --install --namespace=default domain-forwarder --set node-web-service.image.tag=prework-linting-eb36d4e --values=chart/opex-staging-values.yaml --set=deployer.user=david.miller ./chart/;
