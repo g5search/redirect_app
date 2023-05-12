@@ -4,8 +4,11 @@ const greenlock = require('../../greenlock');
 const models = require('../models');
 
 const app = express();
-app.post('*', express.json());
-app.delete('*', express.json());
+
+app.use((req, res, next) =>{
+  console.log({ req, res, next, models });
+  next();
+});
 
 app.get('*', ({ path, hostname }, res) => {
   redirects
@@ -21,26 +24,30 @@ app.get('*', ({ path, hostname }, res) => {
     .catch(err => res.status(404).send(err.toString()));
 });
 
-app.post('/api/v1/backfill/used', async (req, res) => {
-  const domains = await models.domain.findAll({
-    where: {
-      lastUsed: {
-        [models.Sequelize.Op.not]: null
-      }
-    },
-    order: [['updatedAt', 'DESC']]
-  });
-
-  for (let i =0; i < domains.length; i++) {
-    greenlock.add({
-      subject: domains[i].dataValues.domain,
-      altnames: [domains[i].dataValues.domain]
+app.post('/api/v1/backfill/used', express.json(), async (req, res) => {
+  try {
+    const domains = await models.domain.findAll({
+      where: {
+        lastUsed: {
+          [models.Sequelize.Op.not]: null
+        }
+      },
+      order: [['updatedAt', 'DESC']]
     });
+
+    for (let i =0; i < domains.length; i++) {
+      greenlock.add({
+        subject: domains[i].dataValues.domain,
+        altnames: [domains[i].dataValues.domain]
+      });
+    }
+    res.sendStatus(201);
+  } catch (error) {
+    res.status(500).send(error);
   }
-  res.sendStatus(201);
 });
 
-app.post('/api/v1/redirects', async (req, res) => {
+app.post('/api/v1/redirects', express.json(), async (req, res) => {
   const { body } = req;
   const errors = [];
   try {
@@ -83,7 +90,7 @@ app.post('/api/v1/redirects', async (req, res) => {
   res.sendStatus(201);
 });
 
-app.delete('/api/v1/redirects', async (req, res) => {
+app.delete('/api/v1/redirects', express.json(), async (req, res) => {
   const { domain } = req.body;
   const domains = await greenlock.manager.remove({ subject: domain });
   console.info('Removed Domains Successfully', domains);

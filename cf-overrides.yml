@@ -1,6 +1,6 @@
 # REQUIRED - Valid tag for node image to use as the basis for this
 # application's Docker image. See https://hub.docker.com/r/library/node/tags/
-BaseImageTag: "14.21.2"
+BaseImageTag: "12.22.9"
 
 CIPlan: "g5search/ci-plan-node:v1.1.4"
 
@@ -17,7 +17,6 @@ DisableYarn: true
 # project-specific dependencies are installed. Note the use of the `|-`
 # to denote that it is a multiline string.
 PreDependency: |-
-  FROM node:14
   WORKDIR /usr/src/app
   COPY package*.json ./
   RUN npm install --only=production
