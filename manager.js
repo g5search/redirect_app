@@ -61,8 +61,11 @@ module.exports.create = function () {
         return [];
       }
     }
-
-    return getSitesToRenew(opts.renewBefore || Infinity);
+    const sites = await getSitesToRenew(opts.renewBefore || Infinity);
+    if (sites) {
+      return sites;
+    }
+    return [];
   };
 
   manager.remove = async function (opts) {
@@ -97,5 +100,6 @@ async function getSitesToRenew (renewAt) {
         deletedAt
       } = s.toJSON();
       return { subject, altnames: [altnames], renewAt, deletedAt };
-    }));
+    }))
+    .catch(error => console.warn('Chances are this table is empty. Add some domains!', error));
 }
