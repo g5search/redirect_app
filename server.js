@@ -8,7 +8,7 @@ const pkg = require('./package.json');
 
 models.sequelize
   .sync()
-  .then(() => { console.info('Database schema synced!'); })
+  // .then(() => { console.info('Database schema synced!'); })
   .catch(e => console.error(e));
 
 greenlock
@@ -17,6 +17,6 @@ greenlock
     configDir: GREENLOCK_DIR,
     maintainerEmail: GREENLOCK_MAINTAINER_EMAIL,
     packageAgent: `${pkg.name}/${pkg.version}`,
-    cluster: false
+    cluster: true
   })
   .serve(app);
