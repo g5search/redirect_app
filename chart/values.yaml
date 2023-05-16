@@ -11,6 +11,9 @@ node-web-service:
     name: gcr.io/g5-images/redirect_app
   isInternetFacing:  false
   hasMetrics: false
+  hasIngress: true
+  forceSSLRedirect: false
+  hasExternalDns: false
   replicaCount: 2
   revisionHistoryLimit: 1
   command: [ "node", "server.js" ]
