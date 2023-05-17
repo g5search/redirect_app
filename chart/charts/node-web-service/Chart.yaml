@@ -1,0 +1,22 @@
+apiVersion: v2
+name: node-web-service
+type: application
+version: 0.1.0
+description: Basic Node Web Service 
+home: https://github.com/g5search/charts
+dependencies:
+  - name: cloud-helper
+    version: "1.0.1"
+    repository: "@g5-multiverse-helm3-repositories"
+  - name: cloud-sql
+    version: "1.0.5"
+    repository: "@g5-multiverse-helm3-repositories"
+    condition: database.enabled
+  - name: memorystore
+    version: "1.0.1"
+    repository: "@g5-multiverse-helm3-repositories"
+    alias: cache
+    condition: cache.enabled
+  - name: pubsub
+    version: "1.0.0"
+    repository: "@g5-multiverse-helm3-repositories"

@@ -4,6 +4,9 @@ description: A Helm chart for Kubernetes
 name: domain-forwarder
 version: 1.0.0
 dependencies:
+  # - name: node-web-service
+  #   version: "0.1.0"
+  #   repository: "@g5-multiverse-helm3-repositories"
   - name: node-web-service
     version: "0.1.0"
-    repository: "@g5-multiverse-helm3-repositories"
+    repository: "file://Users/davidmiller/Documents/current/redirect_app/chart/charts/node-web-service"

@@ -1,0 +1,139 @@
+{{ range $workername, $workerconfig := .Values.faktories }}
+{{- include "validate-configuration" $ }}
+{{ $configuration := index $.Values.configurations $.Values.configuration -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ $.Release.Name }}-faktory-{{ $workername }}-workers"
+  labels:
+    {{ include "helm-labels" $ | nindent 4 }}
+    app.kubernetes.io/component: "background-worker-{{ $workername }}"
+  annotations:
+    {{ include "reloader-annotation" . | indent 4 }}
+spec:
+  {{ if or (eq $.Values.configuration "production") $configuration.dontDownscaleFaktory }}
+  replicas: {{ $workerconfig.replicas | default 1 }}
+  {{ else }}
+  replicas: 1
+  {{ end }}
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # The default of 100% means we want them ALL to be terminated starting
+      # now, but it's safe to bring up new ones immediately, too. We don't want
+      # to wait for them to terminate, since the grace period may be long to
+      # allow graceful job completion
+      maxUnavailable: {{ dig "rollingUpdate" "maxUnavailable" "100%" $workerconfig | quote }}
+      {{- if $workerconfig.rollingUpdate }}
+      {{- if $workerconfig.rollingUpdate.maxSurge }}
+      maxSurge: {{ $workerconfig.rollingUpdate.maxSurge }}
+      {{- end }}
+      {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $.Release.Name }}
+      app.kubernetes.io/component: background-worker-{{ $workername }}
+  template:
+    metadata:
+      name: faktory-worker
+      labels:
+        app.kubernetes.io/component: background-worker-{{ $workername }}
+        hasMetrics: {{ $.Values.hasMetrics | quote }}
+        {{ include "helm-labels" $ | nindent 8 }}
+      annotations:
+        kubectl.kubernetes.io/default-logs-container: faktory-worker
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") $ | sha256sum }}
+        {{ if $.Values.forceRestart }}
+        restartForced: {{ randAlphaNum 5 | quote }}
+        {{ end }}
+    spec:
+      enableServiceLinks: false
+      serviceAccountName: {{ include "node-web-service.ksaName" $ }}
+      imagePullSecrets:
+        {{ toYaml $.Values.imagePullSecrets | nindent 8 }}
+      terminationGracePeriodSeconds: {{ $workerconfig.gracefulShutdownAllowanceSeconds | default 30 }}
+      {{- if $workerconfig.toleratesPreemptible }}
+      tolerations:
+      - key: {{ $.Values.preemptibleTaint }}
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      {{- end }}
+      affinity:
+        {{- if $workerconfig.toleratesPreemptible }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ $.Values.preemptibleTaint }}
+                operator: In
+                values:
+                  - "true"
+        {{- end }}
+        {{- if $workerconfig.usePodAntiAffinity}}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ $.Release.Name }}
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - "background-worker-{{ $workername }}"
+            topologyKey: "kubernetes.io/hostname"
+        {{- end }}
+      containers:
+       - name: faktory-worker
+          image: "contribsys/faktory:latest"
+          imagePullPolicy: always
+          ports:
+            - name: faktory-ui
+              containerPort: 7420
+              protocol: TCP
+            - name: faktory-server
+              containerPort: 7419
+              protocol: TCP
+        - name: faktory-worker
+          image: {{ required "image.name is required" $.Values.image.name }}:{{ required "image.tag is required" $.Values.image.tag }}
+          # contribsys/faktory is the official image
+          imagePullPolicy: Always
+          command:
+            - /faktory
+            - -w
+          resources:
+            {{ required "faktory worker resource config is required" (toYaml $workerconfig.resources) | nindent 12 }}
+          volumeMounts:
+            {{ include "volume-mounts" $ | nindent 12 }}
+            - name: config
+              mountPath: /app/config/k8s
+          env:
+            - name: CONCURRENCY
+              value: {{ $workerconfig.concurrency | default "5" | quote }}
+            {{ include "common-vars" $ | nindent 12 }}
+            {{ if $workerconfig.env }}
+            {{ toYaml $workerconfig.env | nindent 12 }}
+            {{ end }}
+            {{ if $.Values.env }}
+            {{ toYaml $.Values.env | nindent 12 }}
+            {{ end }}
+        {{ if $.Values.hasMetrics }}
+        {{ include "prometheus-exporter-sidecar" $ | nindent 8 }}
+        {{ end }}
+      volumes:
+        {{ include "volumes" $ | nindent 8 }}
+        - name: config
+          configMap:
+            name: {{ $.Release.Name }}
+            items:
+              {{- if $configuration.faktoryCronSchedule }}
+              - key: sidekiq-cron-schedule
+                path: sidekiq_cron_schedule.yml
+              {{- end }}
+              - key: sidekiq-{{ $workername }}
+                path: sidekiq.yml
+---
+{{ end }}

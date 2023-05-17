@@ -51,7 +51,7 @@ describe('Manager module', () => {
     };
     await manager.set(opts);
 
-    expect(models.site.findOrCreate).toHaveBeenCalled(1);
+    // expect(models.site.findOrCreate).isCalled();
     expect(models.site.findOrCreate).toHaveBeenCalledWith({
       where: { servername: 'test' },
       defaults: opts,

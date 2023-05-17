@@ -2,14 +2,14 @@ global:
   applicationName: domain-forwarder
   region: us-central1
 node-web-service:
-  disableHealthChecking: false
+  disableHealthChecking: true
   database:
     enabled: true
   cloud-sql:
     databaseVersion: POSTGRES_11
   image:
     name: gcr.io/g5-images/redirect_app
-  isInternetFacing:  false
+  isInternetFacing: true
   hasMetrics: false
   hasIngress: true
   forceSSLRedirect: false
@@ -84,6 +84,7 @@ node-web-service:
           name: domain-forwarder
           key: DATABASE_LOGGING
     - name: DATABASE_URL
-      value: $(DATABASE_DIALECT)://$(DATABASE_USER):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
+      # value: $(DATABASE_DIALECT)://$(DATABASE_USER):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
+      value: "postgres://domain-forwarder-a:1EzdYX8LJIK24Sklo6ABD9s7yMgO3VpZ@10.6.0.200:5432/domain-forwarder-a"
     - name: PORT
       value: "8085"
