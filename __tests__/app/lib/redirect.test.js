@@ -94,13 +94,6 @@ test('Domain is in database more than once', async () => {
   }
 });
 
-test('Wildcard', async () => {
-  const redirects = await redirect.get('wildcard.com', '/wildcard/test/subdir');
-  expect(redirects).toEqual({
-    destination: 'https://www.wildcard.com/wildcard/subdir'
-  });
-});
-
 test('forward', async () => {
   const redirects = await redirect.get('forward.com', '/forward/test/subdir');
   expect(redirects).toEqual({

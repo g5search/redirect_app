@@ -1,4 +1,11 @@
 const request = require('supertest');
+
+jest.mock('../../app/lib/greenlock', () => ({
+  create: jest.fn(() => Promise.resolve({})),
+  init: jest.fn(() => Promise.resolve({})),
+  add: jest.fn(() => Promise.resolve({}))
+}));
+
 const app = require('../../app/lib/index');
 
 describe('GET wildcard.com', () => {
