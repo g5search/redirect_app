@@ -4,6 +4,7 @@ const Sequelize = require('sequelize');
 
 const {
   DATABASE_URL,
+  DATABASE_URL_TEST,
   DATABASE_MAX_CONNECTIONS,
   DATABASE_MIN_CONNECTIONS,
   DATABASE_IDLE,
@@ -13,7 +14,9 @@ const {
   DATABASE_LOGGING
 } = process.env;
 
-const sequelize = new Sequelize(DATABASE_URL, {
+const DATABASE_URL_ENV = process.env.NODE_ENV === 'test' ? DATABASE_URL_TEST : DATABASE_URL;
+
+const sequelize = new Sequelize(DATABASE_URL_ENV, {
   pool: {
     max: parseInt(DATABASE_MAX_CONNECTIONS),
     min: parseInt(DATABASE_MIN_CONNECTIONS),

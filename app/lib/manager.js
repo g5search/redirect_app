@@ -1,4 +1,4 @@
-const models = require('./app/models');
+const models = require('../models');
 const { Op } = models.Sequelize;
 
 // TODO kept all the functional code. Looks like they were trying to implement an auto renew feature?

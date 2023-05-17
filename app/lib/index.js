@@ -1,12 +1,14 @@
 const express = require('express');
 const redirects = require('./redirect');
-const greenlock = require('../../greenlock');
+const greenlock = require('./greenlock');
 const models = require('../models');
 
 const app = express();
 
-app.use((req, res, next) =>{
-  console.log({ req, res, next, models });
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log({ req, res, next, models });
+  }
   next();
 });
 
@@ -56,7 +58,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
         domain,
         path,
         destination,
-        secure_destination,
+        // secure_destination,
         wildcard
       } = body[i];
 
@@ -75,7 +77,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
           domain_id: dbDomain.dataValues.id,
           path,
           destination,
-          secure_destination,
+          secure_destination: true, // forcing this always true
           wildcard
         });
     }
@@ -88,6 +90,16 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
     res.status(500).send(errors);
   }
   res.sendStatus(201);
+});
+
+app.post('/api/v1/search', express.json(), async (req, res) => {
+  // use query params to search for pattern matches
+  res.send('Search endpoint');
+});
+
+app.put('/api/v1/redirects', express.json(), async (req, res) => {
+  // search domains and redirects to update.
+  res.send('Update endpoint');
 });
 
 app.delete('/api/v1/redirects', express.json(), async (req, res) => {

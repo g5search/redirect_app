@@ -4,12 +4,12 @@
   "description": "A redirect service for incoming secure domain requests using DNS-validated SSLs",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:coverage:watch": "jest --watch --coverage",
     "start": "NODE_ENV=production node ./server.js",
-    "dev": "NODE_ENV=staging nodemon ./server.js"
+    "dev": "NODE_ENV=development nodemon ./server.js"
   },
   "repository": {
     "type": "git",

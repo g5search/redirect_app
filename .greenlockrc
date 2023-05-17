@@ -1,1 +1,1 @@
-{"configDir":"./greenlock.d","manager":"./manager.js"}
+{"configDir":"./greenlock.d","manager":"./app/lib/manager.js"}

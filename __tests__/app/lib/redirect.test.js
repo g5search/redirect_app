@@ -1,4 +1,4 @@
-const redirect = require('../../app/lib/redirect');
+const redirect = require('../../../app/lib/redirect');
 
 const multipleDesitnations = {
   domain: 'forward.com',
