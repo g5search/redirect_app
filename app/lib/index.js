@@ -94,7 +94,8 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
 
 app.post('/api/v1/search', express.json(), async (req, res) => {
   // use query params to search for pattern matches
-  res.send('Search endpoint');
+  const domains = await models.domain.findAll({ where: { domain: { [models.Sequelize.Op.like]: `${req.query.search}` } } });
+  res.send(domains);
 });
 
 app.put('/api/v1/redirects', express.json(), async (req, res) => {

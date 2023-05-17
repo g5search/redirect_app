@@ -15,7 +15,7 @@ node-web-service:
   forceSSLRedirect: false
   hasExternalDns: false
   replicaCount: 2
-  revisionHistoryLimit: 1
+  revisionHistoryLimit: 10
   command: [ "node", "server.js" ]
   resources:
     requests:
