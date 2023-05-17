@@ -48,13 +48,13 @@ test('redirects are longer than one', () => {
 
 test('Secure and single desitnation', () => {
   secureDestination.redirects[0].secure_destination = true;
-  let redirects = redirect.format(secureDestination.redirects);
+  const redirects = redirect.format(secureDestination.redirects);
   expect(redirects).toEqual({ destination: 'https://www.test.com/stuff' });
 });
 
 test('Non-Secure and single desitnation', () => {
   secureDestination.redirects[0].secure_destination = false;
-  let redirects = redirect.format(secureDestination.redirects);
+  const redirects = redirect.format(secureDestination.redirects);
   expect(redirects).toEqual({ destination: 'http://www.test.com/stuff' });
 });
 
@@ -67,22 +67,22 @@ test('No Redirects', () => {
 });
 
 test('http to https', async () => {
-  let redirects = await redirect.get('nonsecure.com', '/secure');
+  const redirects = await redirect.get('nonsecure.com', '/secure');
   expect(redirects).toEqual({ destination: 'https://www.secure.com' });
 });
 
 test('http to http', async () => {
-  let redirects = await redirect.get('nonsecure.com', '/nonsecure');
+  const redirects = await redirect.get('nonsecure.com', '/nonsecure');
   expect(redirects).toEqual({ destination: 'http://www.nonsecure.com' });
 });
 
 test('https to http', async () => {
-  let redirects = await redirect.get('secure.com', '/nonsecure');
+  const redirects = await redirect.get('secure.com', '/nonsecure');
   expect(redirects).toEqual({ destination: 'http://www.nonsecure.com' });
 });
 
 test('https to https', async () => {
-  let redirects = await redirect.get('secure.com', '/secure');
+  const redirects = await redirect.get('secure.com', '/secure');
   expect(redirects).toEqual({ destination: 'https://www.secure.com' });
 });
 
@@ -95,14 +95,14 @@ test('Domain is in database more than once', async () => {
 });
 
 test('Wildcard', async () => {
-  let redirects = await redirect.get('wildcard.com', '/wildcard/test/subdir');
+  const redirects = await redirect.get('wildcard.com', '/wildcard/test/subdir');
   expect(redirects).toEqual({
     destination: 'https://www.wildcard.com/wildcard/subdir'
   });
 });
 
 test('forward', async () => {
-  let redirects = await redirect.get('forward.com', '/forward/test/subdir');
+  const redirects = await redirect.get('forward.com', '/forward/test/subdir');
   expect(redirects).toEqual({
     destination: 'http://www.forward.com/forward/test/subdir'
   });
