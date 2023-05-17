@@ -84,7 +84,6 @@ node-web-service:
           name: domain-forwarder
           key: DATABASE_LOGGING
     - name: DATABASE_URL
-      # value: $(DATABASE_DIALECT)://$(DATABASE_USER):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
-      value: "postgres://domain-forwarder-a:1EzdYX8LJIK24Sklo6ABD9s7yMgO3VpZ@10.6.0.200:5432/domain-forwarder-a"
+      value: $(DATABASE_DIALECT)://$(DATABASE_USER):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
     - name: PORT
       value: "8085"
