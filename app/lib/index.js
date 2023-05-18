@@ -6,10 +6,23 @@ const models = require('../models');
 const app = express();
 
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.log({ req, res, next, models });
+  if (process.env.NODE_ENV !== 'production') {
+    console.info({ req, res, next, models });
   }
   next();
+});
+
+app.get('/api/v1/search', express.json(), async (req, res) => {
+  try {
+    if (req.query.search) {
+      // use query params to search for pattern matches
+      const domains = await models.domain.findAll({ where: { domain: { [models.Sequelize.Op.like]: `${req.query.search}` } } });
+      res.send(domains);
+    }
+    res.status(422).send('Missing the "?search=" query param with a string to search for.');
+  } catch (error) {
+    res.status(503).send(error);
+  }
 });
 
 app.get('*', ({ path, hostname }, res) => {
@@ -26,7 +39,11 @@ app.get('*', ({ path, hostname }, res) => {
     .catch(err => res.status(404).send(err.toString()));
 });
 
-app.post('/api/v1/backfill/used', express.json(), async (req, res) => {
+/**
+ * Finds all previously used domains and backfills them into greenlock
+ * @api {post} /api/v1/backfill/used
+ */
+app.post('/api/v1/backfill/used', async (req, res) => {
   try {
     const domains = await models.domain.findAll({
       where: {
@@ -92,11 +109,6 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
   res.sendStatus(201);
 });
 
-app.post('/api/v1/search', express.json(), async (req, res) => {
-  // use query params to search for pattern matches
-  const domains = await models.domain.findAll({ where: { domain: { [models.Sequelize.Op.like]: `${req.query.search}` } } });
-  res.send(domains);
-});
 
 app.put('/api/v1/redirects', express.json(), async (req, res) => {
   // search domains and redirects to update.
