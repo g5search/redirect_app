@@ -8,7 +8,7 @@ const pkg = require('./package.json');
 
 models.sequelize
   .sync()
-  // .then(() => { console.info('Database schema synced!'); })
+  .then(() => { console.info('Database schema synced!'); })
   .catch(e => console.error(e));
 
 greenlock

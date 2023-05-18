@@ -1,6 +1,6 @@
 dependencies:
 - name: node-web-service
-  repository: gs://g5-multiverse-helm3-repositories
+  repository: file://../../charts/node-web-service/
   version: 0.1.0
-digest: sha256:d2bbcc91514df9f1ed09d700e223b0552b931943e633fff367726c2712ac8379
-generated: "2023-02-27T09:47:27.148461-08:00"
+digest: sha256:69f184d91e43e687d46f370d86e175e2884a8d1c4789fd52130b05229f0db02a
+generated: "2023-05-18T14:30:39.182506-05:00"

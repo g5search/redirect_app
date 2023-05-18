@@ -9,4 +9,4 @@ dependencies:
   #   repository: "@g5-multiverse-helm3-repositories"
   - name: node-web-service
     version: "0.1.0"
-    repository: "file://Users/davidmiller/Documents/current/redirect_app/chart/charts/node-web-service"
+    repository: "file://../../charts/node-web-service/"
