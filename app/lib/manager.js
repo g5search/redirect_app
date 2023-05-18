@@ -101,5 +101,8 @@ async function getSitesToRenew (renewAt) {
       } = s.toJSON();
       return { subject, altnames: [altnames], renewAt, deletedAt };
     }))
-    .catch(error => console.warn('Chances are this table is empty. Add some domains!', error));
+    .catch((error) => {
+      console.warn('Chances are this table is empty. Add some domains!', error);
+      return [];
+    });
 }
