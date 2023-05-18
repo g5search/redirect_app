@@ -9,7 +9,8 @@
     "test:coverage": "jest --coverage",
     "test:coverage:watch": "jest --watch --coverage",
     "start": "NODE_ENV=production node ./server.js",
-    "dev": "NODE_ENV=development nodemon ./server.js"
+    "dev": "NODE_ENV=development nodemon ./server.js",
+    "deploy": "./deploy.sh"
   },
   "repository": {
     "type": "git",

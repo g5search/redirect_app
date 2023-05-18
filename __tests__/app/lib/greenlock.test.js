@@ -35,5 +35,6 @@ describe('greenlock service', () => {
     expect(greenlock.configDir).toBe('/test/dir');
     expect(greenlock.packageAgent).toBe('test/1.0.0');
     expect(greenlock.maintainerEmail).toBe('test@test.com');
+    expect(greenlock.notify).toBeDefined();
   });
 });

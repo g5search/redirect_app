@@ -21,8 +21,8 @@ const getDestination = async (host, path) => {
   throw new Error('No matching redirect found');
 };
 
-const getWildcards = (domain) => {
-  models.domain.findAll({
+const getWildcards = async (domain) => {
+  return await models.domain.findAll({
     where: { domain },
     include: [
       {

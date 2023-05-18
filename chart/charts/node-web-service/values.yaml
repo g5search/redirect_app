@@ -9,10 +9,6 @@ cache:
   purpose: cache
   maxmemoryPolicy: "allkeys-lfu"
 
-faktory:
-  enabled: false
-# other options?
-
 # users deploying subcharts are expected to pass:
 #   * image.tag - any valid Docker tag, e.g. v1.2.3 or my-branch-123abc
 #
@@ -201,7 +197,6 @@ preemptibleTaint: "cloud.google.com/gke-preemptible"
 # configured to connect to. By default, it will be the one that
 # `node-web-service` brings in.
 activeCloudSQLSubchart: "cloud-sql"
-activeFaktorySubchart: "faktory"
 activeCacheSubchart: "cache"
 
 auth0:
