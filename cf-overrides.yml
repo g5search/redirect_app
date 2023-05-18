@@ -1,6 +1,6 @@
 # REQUIRED - Valid tag for node image to use as the basis for this
 # application's Docker image. See https://hub.docker.com/r/library/node/tags/
-BaseImageTag: "12.22.12-bullseye"
+BaseImageTag: "12.22.9-bullseye"
 
 CIPlan: "g5search/ci-plan-node:v1.1.4"
 
