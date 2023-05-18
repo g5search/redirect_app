@@ -17,6 +17,6 @@ greenlock
     configDir: GREENLOCK_DIR,
     maintainerEmail: GREENLOCK_MAINTAINER_EMAIL,
     packageAgent: `${pkg.name}/${pkg.version}`,
-    cluster: true
+    cluster: false
   })
   .serve(app);

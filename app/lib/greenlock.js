@@ -3,6 +3,7 @@ const Greenlock = require('@root/greenlock');
 const pkg = require('../../package.json');
 
 const {
+  NODE_ENV,
   GREENLOCK_MAINTAINER_EMAIL,
   GREENLOCK_DIR
 } = process.env;
@@ -20,7 +21,8 @@ const greenlock = Greenlock.create({
       console.warn(details);
     }
     console.info({ event, details });
-  }
+  },
+  staging: NODE_ENV !== 'production'
 });
 
 module.exports = greenlock;
