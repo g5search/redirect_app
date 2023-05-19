@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { GREENLOCK_MAINTAINER_EMAIL, GREENLOCK_DIR } = process.env;
+const { GREENLOCK_MAINTAINER_EMAIL, GREENLOCK_DIR, PORT } = process.env;
 
 const greenlock = require('@root/greenlock-express');
 const app = require('./app/lib/index.js');
@@ -21,4 +21,9 @@ const pkg = require('./package.json');
       cluster: false
     })
     .serve(app);
+
+  app
+    .listen(PORT, () => {
+      console.info(`Listening on port ${PORT}!`);
+    });
 })();
