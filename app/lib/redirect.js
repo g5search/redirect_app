@@ -44,14 +44,21 @@ function getDestination (domain, path) {
       }]
     })
     .then(async (destinations) => {
+      if (destinations.length === 0) {
+        console.warn('No destinations found in the database.', { destinations });
+      }
       let srcDomain = destinations;
       try {
         if (srcDomain.length === 0) {
-          // retrieves one or more domain entries
+          // retrieves one or more domain entries regardless of joined redirects
           srcDomain = await models.domain.findAll({ where: { domain } });
         }
-        // only updates the most recently added domain's lastUsed date
-        await srcDomain[0].update({ lastUsed: new Date() });
+        if (srcDomain.length > 0) {
+          // only updates the most recently added domain's lastUsed date (when there are multiple entries)
+          await srcDomain[0].update({ lastUsed: new Date() });
+        } else {
+          console.warn('No incoming domain provided or destinations found in the database.', { destinations, srcDomain });
+        }
       } catch (error) {
         console.error(error);
       }

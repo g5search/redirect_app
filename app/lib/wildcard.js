@@ -22,6 +22,7 @@ const getDestination = async (host, path) => {
 };
 
 const getWildcards = async (domain) => {
+  console.info(`Searching for wildcards for ${domain}`);
   return await models.domain.findAll({
     where: { domain },
     include: [
@@ -32,12 +33,17 @@ const getWildcards = async (domain) => {
     ],
     order: [['updatedAt', 'DESC']]
   }).then(async (destinations) => {
+    // what is destinations? I would expect records from the db
     let srcDomain = destinations;
     try {
       if (srcDomain.length === 0 ) {
+        // if no wildcard redirects are found, just find the domains without the joins
         srcDomain = await models.domain.findAll({ where: { domain } });
       }
-      await srcDomain[0].update({ lastUsed: new Date() });
+      // if any domains are found (wildcard or not), update the lastUsed date
+      if (srcDomain.length > 0) {
+        await srcDomain[0].update({ lastUsed: new Date() });
+      }
     } catch (error) {
       console.error(error);
     }

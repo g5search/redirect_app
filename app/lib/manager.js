@@ -56,7 +56,7 @@ module.exports.create = function () {
           renewAt,
           deletedAt
         } = site.toJSON();
-        return [{ subject, altnames: [altnames], renewAt: renewAt ? renewAt : 1 , deletedAt }];
+        return [{ subject, altnames: altnames, renewAt: renewAt ? renewAt : 1 , deletedAt }];
       } else {
         return [];
       }
@@ -99,7 +99,7 @@ async function getSitesToRenew (renewAt) {
         renewAt,
         deletedAt
       } = s.toJSON();
-      return { subject, altnames: [altnames], renewAt, deletedAt };
+      return { subject, altnames: altnames, renewAt, deletedAt };
     }))
     .catch((error) => {
       console.warn('Chances are this table is empty. Add some domains!', error);

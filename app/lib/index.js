@@ -5,26 +5,26 @@ const models = require('../models');
 
 const app = express();
 
+/**
+ * Logs all incoming requests
+ */
 app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') {
-    console.info({ req, res, next, models });
+    console.info({
+      path: req.path,
+      hostname: req.hostname
+    });
   }
   next();
 });
 
-app.get('/api/v1/search', express.json(), async (req, res) => {
-  try {
-    if (req.query.search) {
-      // use query params to search for pattern matches
-      const domains = await models.domain.findAll({ where: { domain: { [models.Sequelize.Op.like]: `${req.query.search}` } } });
-      res.send(domains);
-    }
-    res.status(422).send('Missing the "?search=" query param with a string to search for.');
-  } catch (error) {
-    res.status(503).send(error);
-  }
-});
 
+/**
+ * Handles all forwarding requests to their correct destination
+ * Looks for absolute matches first, then wildcard matches
+ * @api {get}
+ * @returns status 301 or 404 and elevates protocol to HTTPS
+ */
 app.get('*', ({ path, hostname }, res) => {
   redirects
     .get(hostname, path)
@@ -39,9 +39,26 @@ app.get('*', ({ path, hostname }, res) => {
     .catch(err => res.status(404).send(err.toString()));
 });
 
+
+app.post('/api/v1/search', express.json(), async (req, res) => {
+  try {
+    if (req.query.search) {
+      // use query params to search for pattern matches
+      const domains = await models.domain.findAll({ where: { domain: { [models.Sequelize.Op.like]: `${req.query.search}` } } });
+      res.send(domains);
+    } else {
+      res.status(422).send('Missing the "?search=" query param with a string to search for.');
+    }
+  } catch (error) {
+    res.status(503).send(error);
+  }
+});
+
+
 /**
  * Finds all previously used domains and backfills them into greenlock
  * @api {post} /api/v1/backfill/used
+ * @returns status 201 or 500
  */
 app.post('/api/v1/backfill/used', async (req, res) => {
   try {
@@ -66,6 +83,13 @@ app.post('/api/v1/backfill/used', async (req, res) => {
   }
 });
 
+
+/**
+ * Primary add endpoint for adding new domains and their redirects
+ * @api {post} /api/v1/redirects
+ * @apiParam {Object[]} body
+ * @returns status 201 or 500
+ */
 app.post('/api/v1/redirects', express.json(), async (req, res) => {
   const { body } = req;
   const errors = [];
@@ -114,6 +138,7 @@ app.put('/api/v1/redirects', express.json(), async (req, res) => {
   // search domains and redirects to update.
   res.send('Update endpoint');
 });
+
 
 app.delete('/api/v1/redirects', express.json(), async (req, res) => {
   const { domain } = req.body;

@@ -18,7 +18,8 @@ const greenlock = Greenlock.create({
   maintainerEmail: GREENLOCK_MAINTAINER_EMAIL,
   notify: function (event, details) {
     if ('error' === event) {
-      console.warn(details);
+      // `details` is a large string with all the html from any 404 pages
+      console.warn(details.substring(0, 100) + '...');
     }
     console.info({ event, details });
   },
