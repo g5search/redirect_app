@@ -10,6 +10,7 @@
     "test:coverage:watch": "jest --watch --coverage",
     "start": "NODE_ENV=production node ./server.js",
     "dev": "NODE_ENV=development nodemon ./server.js",
+    "sql:start": "./cloud_sql_proxy -instances=domain-forward-218421:us-central1:domain-forwarder-a=tcp:5432",
     "deploy": "./deploy.sh"
   },
   "repository": {
