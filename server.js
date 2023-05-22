@@ -22,8 +22,8 @@ const pkg = require('./package.json');
     })
     .serve(app);
 
-  app
-    .listen(PORT, () => {
-      console.info(`Listening on port ${PORT}!`);
-    });
+  // app
+  //   .listen(PORT, () => {
+  //     console.info(`Listening on port ${PORT}!`);
+  //   });
 })();
