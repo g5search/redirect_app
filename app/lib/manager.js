@@ -1,3 +1,4 @@
+require('dotenv').config(); // import env again to support npx command
 const models = require('../models');
 const { Op } = models.Sequelize;
 
