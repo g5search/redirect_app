@@ -23,7 +23,8 @@ const greenlock = Greenlock.create({
     }
     console.info({ event, details });
   },
-  staging: NODE_ENV !== 'production'
+  // staging: NODE_ENV !== 'production'
+  staging: false
 });
 
 module.exports = greenlock;
