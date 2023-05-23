@@ -19,7 +19,7 @@ const greenlock = Greenlock.create({
   notify: function (event, details) {
     if ('error' === event) {
       // `details` is a large string with all the html from any 404 pages
-      console.warn(details.substring(0, 100) + '...');
+      console.warn(details);
     }
     console.info({ event, details });
   },
