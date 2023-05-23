@@ -44,7 +44,17 @@ app.post('/api/v1/search', express.json(), async (req, res) => {
   try {
     if (req.query.search) {
       // use query params to search for pattern matches
-      const domains = await models.domain.findAll({ where: { domain: { [models.Sequelize.Op.like]: `${req.query.search}` } } });
+      console.info('Searching for domains with pattern:', req.query.search);
+      const domains = await models.domain.findAll({
+        where: {
+          domain: {
+            [models.Sequelize.Op.like]: `%${req.query.search}%`
+          }
+        },
+        include: [{
+          model: models.redirect
+        }]
+      });
       res.send(domains);
     } else {
       res.status(422).send('Missing the "?search=" query param with a string to search for.');
