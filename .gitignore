@@ -4,4 +4,4 @@ node_modules
 LightsailDefaultPrivateKey-us-west-2.pem
 .DS_Store
 coverage
-greenlock.d
+greenlock.d/*
