@@ -3,7 +3,7 @@ const Greenlock = require('@root/greenlock');
 const pkg = require('../../package.json');
 
 const {
-  NODE_ENV,
+  // NODE_ENV,
   GREENLOCK_MAINTAINER_EMAIL,
   GREENLOCK_DIR
 } = process.env;
