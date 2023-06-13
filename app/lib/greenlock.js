@@ -1,9 +1,9 @@
 const path = require('path');
 const Greenlock = require('@root/greenlock');
 const pkg = require('../../package.json');
+const logger = require('./logging');
 
 const {
-  // NODE_ENV,
   GREENLOCK_MAINTAINER_EMAIL,
   GREENLOCK_DIR,
   GREENLOCK_DEBUG
@@ -20,11 +20,10 @@ const greenlock = Greenlock.create({
   notify: function (event, details) {
     if ('error' === event) {
       // `details` is a large string with all the html from any 404 pages
-      console.warn(details);
+      logger(details);
     }
-    console.info({ event, details });
+    logger({ event, details });
   },
-  // staging: NODE_ENV !== 'production'
   staging: GREENLOCK_DEBUG === 'true'
 });
 
