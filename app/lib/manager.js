@@ -42,22 +42,21 @@ module.exports.create = function () {
       }
     });
     await site.update({ altnames: opts.altnames, deletedAt: opts.deletedAt, renewAt: opts.renewAt });
-    return null;
+    return site;
   };
 
+  // this doesn't appear be used anywhere
   manager.find = async function (opts) {
     if (opts.servername) {
       const site = await models.site.findOne({
-        where: { servername: opts.servername }
+        where: { servername: opts.servername, deletedAt: null },
+        include: [{
+          model: models.domain,
+          include: [{ model: models.redirect }]
+        }]
       });
       if (site) {
-        const {
-          servername: subject,
-          altnames,
-          renewAt,
-          deletedAt
-        } = site.toJSON();
-        return [{ subject, altnames: altnames, renewAt: renewAt ? renewAt : 1 , deletedAt }];
+        return [site.toJSON()];
       } else {
         return [];
       }

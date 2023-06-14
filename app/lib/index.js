@@ -45,14 +45,16 @@ app.post('/api/v1/search', express.json(), async (req, res) => {
     if (req.query.search) {
       // use query params to search for pattern matches
       console.info('Searching for domains with pattern:', req.query.search);
-      const domains = await models.domain.findAll({
+      const domains = await models.site.findAll({
         where: {
-          domain: {
+          servername: {
             [models.Sequelize.Op.like]: `%${req.query.search}%`
-          }
+          },
+          deletedAt: null
         },
         include: [{
-          model: models.redirect
+          model: models.domain,
+          include: [{ model: models.redirect }]
         }]
       });
       res.send(domains);
@@ -113,15 +115,26 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
         wildcard
       } = body[i];
 
-      await greenlock.add({
+      // not sure that greenlock.add and greenlock.manager.set are the same
+      const site = await greenlock.manager.set({
         subject: domain,
         altnames: [domain]
       });
 
+      // TODO hopefully this isn't necessary
+      // const site = await models.site.findOne({
+      //   where: { servername: domain }
+      // });
+
       const [dbDomain] = await models.domain.findOrCreate({
         where: { domain },
-        defaults: { domain }
+        defaults: {
+          domain,
+          site_id: site.id
+        }
       });
+
+      console.log({ dbDomain });
 
       await models.redirect
         .create({
