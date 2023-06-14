@@ -1,5 +1,6 @@
 const wildcard = require('./wildcard');
 const models = require('../models');
+const logger = require('./logging');
 
 /**
  *
@@ -45,7 +46,7 @@ function getDestination (domain, path) {
     })
     .then(async (destinations) => {
       if (destinations.length === 0) {
-        console.warn('No destinations found in the database.', { destinations });
+        logger.warn('No destinations found in the database.', { destinations });
       }
       let srcDomain = destinations;
       try {
@@ -57,10 +58,10 @@ function getDestination (domain, path) {
           // only updates the most recently added domain's lastUsed date (when there are multiple entries)
           await srcDomain[0].update({ lastUsed: new Date() });
         } else {
-          console.warn('No incoming domain provided or destinations found in the database.', { destinations, srcDomain });
+          logger.warn('No incoming domain provided or destinations found in the database.', { destinations, srcDomain });
         }
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       }
 
       // returns what it receives

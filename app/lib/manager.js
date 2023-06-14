@@ -1,5 +1,6 @@
 require('dotenv').config(); // import env again to support npx command
 const models = require('../models');
+const logger = require('./logging');
 const { Op } = models.Sequelize;
 
 // TODO kept all the functional code. Looks like they were trying to implement an auto renew feature?
@@ -103,7 +104,7 @@ async function getSitesToRenew (renewAt) {
       return { subject, altnames: altnames, renewAt, deletedAt };
     }))
     .catch((error) => {
-      console.warn('Chances are this table is empty. Add some domains!', error);
+      logger.warn('Chances are this table is empty. Add some domains!', error);
       return [];
     });
 }

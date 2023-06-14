@@ -2,6 +2,7 @@ const express = require('express');
 const redirects = require('./redirect');
 const greenlock = require('./greenlock');
 const models = require('../models');
+const logger = require('./logging');
 
 const app = express();
 
@@ -10,7 +11,7 @@ const app = express();
  */
 app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') {
-    console.info({
+    logger.info({
       path: req.path,
       hostname: req.hostname
     });
@@ -44,7 +45,7 @@ app.post('/api/v1/search', express.json(), async (req, res) => {
   try {
     if (req.query.search) {
       // use query params to search for pattern matches
-      console.info('Searching for domains with pattern:', req.query.search);
+      logger.info('Searching for domains with pattern:', req.query.search);
       const domains = await models.domain.findAll({
         where: {
           domain: {
@@ -133,7 +134,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
         });
     }
   } catch (error) {
-    console.warn(error);
+    logger.warn(error);
     errors.push(error);
   }
 
@@ -153,7 +154,7 @@ app.put('/api/v1/redirects', express.json(), async (req, res) => {
 app.delete('/api/v1/redirects', express.json(), async (req, res) => {
   const { domain } = req.body;
   const domains = await greenlock.manager.remove({ subject: domain });
-  console.info('Removed Domains Successfully', domains);
+  logger.info('Removed Domains Successfully', domains);
   res.status(202).send(domains);
 });
 

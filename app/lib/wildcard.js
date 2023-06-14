@@ -1,4 +1,5 @@
 const models = require('../models');
+const logger = require('./logging');
 
 const getDestination = async (host, path) => {
   const [wildcard] = await getWildcards(host);
@@ -22,7 +23,7 @@ const getDestination = async (host, path) => {
 };
 
 const getWildcards = async (domain) => {
-  console.info(`Searching for wildcards for ${domain}`);
+  logger.info(`Searching for wildcards for ${domain}`);
   return await models.domain.findAll({
     where: { domain },
     include: [
@@ -45,7 +46,7 @@ const getWildcards = async (domain) => {
         await srcDomain[0].update({ lastUsed: new Date() });
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
     return destinations;
   });
