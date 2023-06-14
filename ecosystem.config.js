@@ -11,7 +11,7 @@ module.exports = {
   apps: [{
     name: 'redirect_app',
     script: './server.js',
-    watch: true,
+    watch: false,
     out_file: 'logs/my-app-out.log',
     error_file: 'logs/my-app-err.log',
     log_date_format: 'YYYY-MM-DD HH:mm Z',
