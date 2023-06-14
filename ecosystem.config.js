@@ -35,7 +35,7 @@ module.exports = {
  */
 const fs = require('fs');
 const util = require('util');
-const log_file = fs.createWriteStream(__dirname + 'logs/my-app-out.log', {flags: 'w'});
+const log_file = fs.createWriteStream(__dirname + '/logs/my-app-out.log', {flags: 'w'});
 const log_stdout = process.stdout;
 
 console.log = function(d) {
