@@ -39,13 +39,13 @@ const log_file = fs.createWriteStream(__dirname + 'logs/my-app-out.log', {flags:
 const log_stdout = process.stdout;
 
 console.log = function(d) {
-  logger.info(util.format(d));
+  logger(util.format(d));
   log_file.write(util.format(d) + '\n');
   log_stdout.write(util.format(d) + '\n');
 };
 
 console.error = function(d) {
-  logger.error(util.format(d));
+  logger(util.format(d));
   log_file.write(util.format(d) + '\n');
   log_stdout.write(util.format(d) + '\n');
 };
