@@ -20,17 +20,6 @@ const {
 
 const DATABASE_URL_ENV = process.env.NODE_ENV === 'test' ? DATABASE_URL_TEST : DATABASE_URL;
 
-console.info({
-  DATABASE_URL_ENV,
-  DATABASE_URL,
-  DATABASE_URL_TEST,
-  DATABASE_MAX_CONNECTIONS,
-  DATABASE_PASSWORD,
-  DATABASE_HOST,
-  DATABASE_NAME,
-  DATABASE_USER
-});
-
 const sequelize = new Sequelize(DATABASE_URL_ENV, {
   pool: {
     max: parseInt(DATABASE_MAX_CONNECTIONS),
