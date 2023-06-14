@@ -1,16 +1,23 @@
 require('dotenv').config();
-const { GREENLOCK_MAINTAINER_EMAIL, GREENLOCK_DIR } = process.env;
+
+const {
+  GREENLOCK_MAINTAINER_EMAIL,
+  GREENLOCK_DIR,
+  NODE_ENV,
+  PORT
+} = process.env;
 
 const greenlock = require('@root/greenlock-express');
 const app = require('./app/lib/index.js');
+const logger = require('./app/lib/logging');
 const models = require('./app/models');
 const pkg = require('./package.json');
 
 (async () => {
   await models.sequelize
     .sync()
-    .then(() => { console.info('Database schema synced!'); })
-    .catch(e => console.error(e));
+    .then(() => { logger.info('Database schema synced!'); })
+    .catch(e => logger.error(e));
 
   greenlock
     .init({
@@ -22,8 +29,9 @@ const pkg = require('./package.json');
     })
     .serve(app);
 
-  // app
-  //   .listen(PORT, () => {
-  //     console.info(`Listening on port ${PORT}!`);
-  //   });
+  if (NODE_ENV === 'development') {
+    app.listen(PORT, () => {
+      logger.info(`Listening on port ${PORT}!`);
+    });
+  }
 })();
