@@ -11,8 +11,4 @@ const logger = winston.createLogger({
   ]
 });
 
-logger.info('***** Info initialized!');
-logger.warn('***** Warn initialized!');
-logger.error('***** Error initialized!');
-
 module.exports = logger;
