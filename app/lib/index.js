@@ -38,15 +38,11 @@ app.get('*', ({ path, hostname }, res) => {
 });
 
 
-app.post('/api/v1/:type/search', express.json(), async (req, res) => {
+app.post('/api/v1/search', express.json(), async (req, res) => {
   try {
-    if (req.params.type !== 'sites' || req.params.type !== 'domains') {
-      res.status(422).send('Invalid type. Must be "sites" or "domains"');
-    }
     if (req.query.search) {
-      const {type} = req.params;
-      logger.info(`Searching for ${type} with pattern:`, req.query.search);
-      const domains = await models[type].findAll({
+      logger.info(`Searching for redirects with pattern: ${req.query.search}`);
+      const websites = await models.site.findAll({
         where: {
           servername: {[models.Sequelize.Op.like]: `%${req.query.search}%`},
           deletedAt: null
@@ -56,7 +52,7 @@ app.post('/api/v1/:type/search', express.json(), async (req, res) => {
           include: [{ model: models.redirect }]
         }]
       });
-      res.send(domains);
+      res.send(websites);
     } else {
       res.status(422).send('Missing the "?search=" query param with a string to search for.');
     }
