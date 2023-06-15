@@ -6,4 +6,4 @@ LightsailDefaultPrivateKey-us-west-2.pem
 coverage
 greenlock.d/*
 config
-
+logs/*
