@@ -7,17 +7,130 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:8085/api/v1/search?search=",
+			"name": "LOCALHOST",
+			"item": [
+				{
+					"name": "search {local)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8086/api/v1/search?search=cindy",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"api",
+								"v1",
+								"search"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "cindy"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (local)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"domain\": \"forwarding.newdomain1.com\",\n    \"path\": \"/\",\n    \"destination\": \"www.stratypus.com\",\n    \"wildcard\": true\n  }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8086/api/v1/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"api",
+								"v1",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "backfill/used (local)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085}/api/v1/backfill/used",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085}",
+							"path": [
+								"api",
+								"v1",
+								"backfill",
+								"used"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove (local)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"forwarding.stratypus.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8086/api/v1/redirects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"api",
+								"v1",
+								"redirects"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "search",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8085/api/v1/search?search=",
-					"protocol": "http",
+					"raw": "{{PROTOCOL}}://{{HOST}}/api/v1/search?search=stratypus",
+					"protocol": "{{PROTOCOL}}",
 					"host": [
-						"localhost"
+						"{{HOST}}"
 					],
-					"port": "8085",
 					"path": [
 						"api",
 						"v1",
@@ -26,7 +139,7 @@
 					"query": [
 						{
 							"key": "search",
-							"value": ""
+							"value": "stratypus"
 						}
 					]
 				}
@@ -34,13 +147,13 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8085/api/v1/redirects",
+			"name": "create",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n  {\n    \"domain\": \"stratypus.com\",\n    \"path\": \"/\",\n    \"destination\": \"www.pcktbot.com\",\n    \"wildcard\": true\n  }\n]",
+					"raw": "[\n  {\n    \"domain\": \"forwarding.staging.com\",\n    \"path\": \"/test\",\n    \"destination\": \"g5search.github.io/opex-runbook\",\n    \"wildcard\": false\n  }\n]",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -48,12 +161,40 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8085/api/v1/redirects",
-					"protocol": "http",
+					"raw": "{{PROTOCOL}}://{{HOST}}/api/v1/create",
+					"protocol": "{{PROTOCOL}}",
 					"host": [
-						"localhost"
+						"{{HOST}}"
 					],
-					"port": "8085",
+					"path": [
+						"api",
+						"v1",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"domain\": \"forwarding.stratypus.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{PROTOCOL}}://{{HOST}}/api/v1/redirects",
+					"protocol": "{{PROTOCOL}}",
+					"host": [
+						"{{HOST}}"
+					],
 					"path": [
 						"api",
 						"v1",
@@ -62,6 +203,38 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "localhost:8086",
+			"type": "string"
+		},
+		{
+			"key": "PROTOCOL",
+			"value": "http",
+			"type": "string"
 		}
 	]
 }
