@@ -44,8 +44,8 @@ describe('Manager module', () => {
     models.site.findOrCreate.mockResolvedValue([mockSite]);
     const manager = managerModule.create();
     const opts = {
-      servername: 'test',
-      altnames: 'test.com',
+      subject: 'test',
+      altnames: ['test.com'],
       deletedAt: null,
       renewAt: null,
     };

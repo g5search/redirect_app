@@ -6,6 +6,12 @@ jest.mock('../../app/lib/greenlock', () => ({
   add: jest.fn(() => Promise.resolve({}))
 }));
 
+jest.mock('../../app/lib/logging', () => ({
+  info: jest.fn(() => Promise.resolve({})),
+  warn: jest.fn(() => Promise.resolve({})),
+  error: jest.fn(() => Promise.resolve({}))
+}));
+
 const app = require('../../app/lib/index');
 
 describe('GET wildcard.com', () => {

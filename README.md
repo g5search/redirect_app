@@ -40,20 +40,59 @@ GREENLOCK_DEBUG=
 ```
 
 ### Step 5
-install the node modules 
-> npm install
+install the node modules and support services
+`npm install`
+
+These packages support logging with GCP.
+
+``` sh
+curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh
+sudo bash add-logging-agent-repo.sh
+sudo apt-get update
+sudo apt-get install google-fluentd
+sudo apt-get install google-fluentd-catch-all-config
+sudo service google-fluentd start
+```
+
+Then edit the XML config at `etc/google-fluentd/config.d/`:
+
+``` xml
+<source>
+  @type tail
+  path /var/log/my-app-out.log
+  pos_file /var/lib/google-fluentd/pos/my-app-out.pos
+  read_from_head true
+  <parse>
+    @type none
+  </parse>
+  tag compute.googleapis.com/app
+</source>
+```
+> Change paths as needed. PM2 will also write to the same location.
+
+Then restart the service.
+
+`sudo service google-fluentd restart`
+
 ### Step 6 
 Install [PM2](https://pm2.io/doc/en/runtime/overview/) to run the app after the SSH session is closed
-> npm install pm2 -g
+`npm install pm2 -g`
 > Follow these steps to create a [start up hook](https://pm2.io/doc/en/runtime/guide/startup-hook/#installation)
 
 ### Step 7
-Start the app with PM2
-> pm2 start server.js -redirectApp
+
+Start the app with PM2. We are coming to consume the ecosystem config file for this.
+
+`sudo pm2 start ecosystem.config.js` for development mode.
+`sudo pm2 start ecosystem.config.js --env production` for production mode.
+
+PM2 is run at root because it attaches to both TCP ports 80 and 443.
+
+Restart the app `sudo pm2 restart redirect_app`
 
 ## Adding a new redirect
 ### Using `curl`
-```
+``` sh
 curl -X POST https://domain-forwarder.g5marketingcloud.com/api/v1/redirects \
       -H 'Content-Type: application/json' \
       -d '[{"domain":"www.g5devops.com","path":"/","destination":"runbook.g5marketingcloud.com","secure_destination":true,"wildcard":true}]'
@@ -64,6 +103,10 @@ After pointing the domain at the server and running this curl command I did have
 As of right this commit the production redirect_app's DNS to point to is `domain-forwarder.g5dns.com`.
 If they're redirecting an apex/root domain and do not have a registrar that supports ALIASA or "cname flattening" then you will point to whatever IP the domain-forwarder.g5dns.com is pointed to (currently: 35.232.226.111) The "ALIASA" type thing is sometimes named differently between providers. It basically lets you point an A record to a named DNS record instead of requiring it to be to an IP address.
 
+### Postman Collection
+
+You can also import the API endpoints to Postman by using the file `api-postman.json`.
+
 ## Troubleshooting
 ### Site is not redirecting
 
@@ -73,10 +116,8 @@ If they're redirecting an apex/root domain and do not have a registrar that supp
  - Make sure that the domain_id is correct in the redirects table
     - The path should start with a "/"
  - Tail the logs 
-	 - > pm2 logs redirectApp
+	 - `sudo pm2 logs redirect_app`
    
-  helm upgrade --install --namespace=default domain-forwarder --set node-web-service.image.tag=prework-linting-ef4c045 --values=chart/opex-staging-values.yaml --set=deployer.user=david.miller ./chart/
-
 ### Local Container Testing
 
 run `./docker_build.sh` to run in a local docker container with API and default http/https ports.
