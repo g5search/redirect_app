@@ -38,16 +38,17 @@ app.get('*', ({ path, hostname }, res) => {
 });
 
 
-app.post('/api/v1/search', express.json(), async (req, res) => {
+app.post('/api/v1/:type/search', express.json(), async (req, res) => {
   try {
+    if (req.params.type !== 'sites' || req.params.type !== 'domains') {
+      res.status(422).send('Invalid type. Must be "sites" or "domains"');
+    }
     if (req.query.search) {
-      // use query params to search for pattern matches
-      logger.info('Searching for domains with pattern:', req.query.search);
-      const domains = await models.domain.findAll({
+      const {type} = req.params;
+      logger.info(`Searching for ${type} with pattern:`, req.query.search);
+      const domains = await models[type].findAll({
         where: {
-          servername: {
-            [models.Sequelize.Op.like]: `%${req.query.search}%`
-          },
+          servername: {[models.Sequelize.Op.like]: `%${req.query.search}%`},
           deletedAt: null
         },
         include: [{
@@ -96,11 +97,11 @@ app.post('/api/v1/backfill/used', async (req, res) => {
 
 /**
  * Primary add endpoint for adding new domains and their redirects
- * @api {post} /api/v1/redirects
+ * @api {post} /api/v1/create
  * @apiParam {Object[]} body
  * @returns status 201 or 500
  */
-app.post('/api/v1/redirects', express.json(), async (req, res) => {
+app.post('/api/v1/create', express.json(), async (req, res) => {
   const { body } = req;
   const errors = [];
   try {
@@ -132,7 +133,7 @@ app.post('/api/v1/redirects', express.json(), async (req, res) => {
         }
       });
 
-      console.log({ dbDomain });
+      logger.info(dbDomain);
 
       await models.redirect
         .create({
