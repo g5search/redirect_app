@@ -46,7 +46,7 @@ function getDestination (domain, path) {
     })
     .then(async (destinations) => {
       if (destinations.length === 0) {
-        logger.warn('No destinations found in the database.', { destinations });
+        logger.warn('No destinations found in the database.', destinations);
       }
       let srcDomain = destinations;
       try {
@@ -58,7 +58,7 @@ function getDestination (domain, path) {
           // only updates the most recently added domain's lastUsed date (when there are multiple entries)
           await srcDomain[0].update({ lastUsed: new Date() });
         } else {
-          logger.warn('No incoming domain provided or destinations found in the database.', { destinations, srcDomain });
+          logger.warn('No incoming domain provided or destinations found in the database.', JSON.stringify({ destinations, srcDomain }));
         }
       } catch (error) {
         logger.error(error);

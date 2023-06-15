@@ -11,10 +11,7 @@ const app = express();
  */
 app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') {
-    logger.info({
-      path: req.path,
-      hostname: req.hostname
-    });
+    logger.info(`Router: ${req.hostname}${req.path}`);
   }
   next();
 });

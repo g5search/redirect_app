@@ -6,7 +6,6 @@
  *
  */
 require('dotenv').config();
-const logger = require('./app/lib/logging');
 
 module.exports = {
   apps: [{

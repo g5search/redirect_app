@@ -11,6 +11,13 @@ const {
 
 const packageRoot = path.join(__dirname, '../../');
 
+const truncate = (str) => {
+  if (str.length > 100) {
+    return `${str.slice(0, 100)}...`;
+  }
+  return str;
+};
+
 const greenlock = Greenlock.create({
   packageRoot,
   configDir: GREENLOCK_DIR,
@@ -20,9 +27,9 @@ const greenlock = Greenlock.create({
   notify: function (event, details) {
     if ('error' === event) {
       // `details` is a large string with all the html from any 404 pages
-      logger(details);
+      logger.warn(truncate(details));
     }
-    logger({ event, details });
+    logger.info({ subject: event, message: truncate(details) });
   },
   staging: GREENLOCK_DEBUG === 'true'
 });

@@ -23,7 +23,7 @@ const getDestination = async (host, path) => {
 };
 
 const getWildcards = async (domain) => {
-  logger.info(`Searching for wildcards for ${domain}`);
+  logger.info(`Searching for wildcards for ${domain} ...`);
   return await models.domain.findAll({
     where: { domain },
     include: [
