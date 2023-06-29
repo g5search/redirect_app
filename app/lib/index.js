@@ -113,11 +113,11 @@ app.post('/api/v1/create', express.json(), async (req, res) => {
       // make sure domain doesn't have protocol and is URL-like
       const formattedDomain = await validateAndFormatDomain(domain);
       // not sure that greenlock.add and greenlock.manager.set are the same
-      // await greenlock.add({
-      //   subject: formattedDomain,
-      //   servername: formattedDomain,
-      //   altnames: [formattedDomain]
-      // });
+      await greenlock.add({
+        subject: formattedDomain,
+        servername: formattedDomain,
+        altnames: [formattedDomain]
+      });
 
       const site = await greenlock.manager.set({
         subject: formattedDomain,
