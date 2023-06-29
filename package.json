@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/g5search/redirect_app.git"
   },
-  "author": "Tyler Hasenoehrl",
+  "author": "Tyler Hasenoehrl, David Miller",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/g5search/redirect_app/issues"
@@ -43,6 +43,7 @@
     "greenlock-manager-test": "^3.1.1",
     "jest": "^26.6.1",
     "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.1",
     "supertest": "^3.4.2"
   }
 }

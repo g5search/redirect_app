@@ -29,36 +29,43 @@ module.exports.create = function () {
     }
   };
 
-  manager.set = async function (opts) {
-    // Required: updated `renewAt` and `deletedAt` for certificate matching `subject`
-    const [site] = await models.site.findOrCreate({
-      where: {
-        servername: opts.subject
-      },
-      defaults: {
-        servername: opts.subject,
-        altnames: opts.altnames,
-        deletedAt: opts.deletedAt,
-        renewAt: opts.renewAt
-      }
-    });
-    await site.update({ altnames: opts.altnames, deletedAt: opts.deletedAt, renewAt: opts.renewAt });
-    return null;
-  };
+  // manager.set = async function (opts) {
+  //   try {
+  //     // Required: updated `renewAt` and `deletedAt` for certificate matching `subject`
+  //     const [site] = await models.site.findOrCreate({
+  //       where: {
+  //         servername: opts.subject
+  //       },
+  //       defaults: {
+  //         servername: opts.subject,
+  //         altnames: opts.altnames,
+  //         deletedAt: opts.deletedAt,
+  //         renewAt: opts.renewAt
+  //       }
+  //     });
+  //     await site.update({
+  //       altnames: opts.altnames,
+  //       deletedAt: opts.deletedAt,
+  //       renewAt: opts.renewAt
+  //     });
+  //     return site;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
 
+  // this doesn't appear be used anywhere
   manager.find = async function (opts) {
     if (opts.servername) {
       const site = await models.site.findOne({
-        where: { servername: opts.servername }
+        where: { servername: opts.servername, deletedAt: null },
+        include: [{
+          model: models.domain,
+          include: [{ model: models.redirect }]
+        }]
       });
       if (site) {
-        const {
-          servername: subject,
-          altnames,
-          renewAt,
-          deletedAt
-        } = site.toJSON();
-        return [{ subject, altnames: altnames, renewAt: renewAt ? renewAt : 1 , deletedAt }];
+        return [site.toJSON()];
       } else {
         return [];
       }

@@ -7,6 +7,11 @@ jest.mock('../../../app/models', () => ({
   },
 }));
 
+jest.mock('../../../app/lib/logging', () => ({
+  info: jest.fn(),
+  error: jest.fn(),
+}));
+
 const models = require('../../../app/models');
 const managerModule = require('../../../app/lib/manager');
 
@@ -37,6 +42,10 @@ describe('Manager module', () => {
       deletedAt: null,
       challenges: null,
     });
+
+    models.site.findOne.mockResolvedValue(null);
+    const nullResult = await manager.get({ servername: 'not.found.com' });
+    expect(nullResult).toEqual(null);
   });
 
   test('manager.set', async () => {
@@ -63,4 +72,46 @@ describe('Manager module', () => {
   });
 
   // Continue writing tests for find and remove
+  test('manager.find', async () => {
+    const opts = {
+      servername: 'test-servername',
+      renewBefore: 1
+    };
+    const mockSites = [{
+      toJSON: () => ({
+        servername: 'test-servername',
+        altnames: 'test.com',
+        renewAt: null,
+        deletedAt: null,
+      })
+    }];
+
+    models.site.findOne.mockResolvedValue(mockSites[0]);
+    models.site.findAll.mockResolvedValue(mockSites);
+
+    const manager = managerModule.create();
+    const result = await manager.find(opts);
+
+    expect(models.site.findOne).toHaveBeenCalledWith({
+      where: { servername: 'test-servername', deletedAt: null }
+    });
+
+    expect(models.site.findAll).toHaveBeenCalledWith({
+      renewAt: {
+        [models.Sequelize.Op.gte]: opts.renewBefore
+      }
+    });
+    expect(result).toEqual([{
+      subject: 'test-servername',
+      altnames: ['test.com'],
+      renewAt: 1,
+      deletedAt: null
+    }]);
+
+    models.site.findOne.mockResolvedValue(null);
+    const nullResult = await manager.find({ servername: 'not.found.com' });
+    expect(nullResult).toEqual([]);
+
+  });
+
 });

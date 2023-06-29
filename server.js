@@ -30,6 +30,9 @@ const pkg = require('./package.json');
     .serve(app);
 
   if (NODE_ENV === 'development') {
+    /**
+     * greenlock express attaches to 80 and 443, so we need another port locally
+     */
     app.listen(PORT, () => {
       logger.info(`Listening on port ${PORT}!`);
     });

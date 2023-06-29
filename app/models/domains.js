@@ -7,6 +7,14 @@ module.exports = (sequelize) => {
       primaryKey: true,
       type: INTEGER
     },
+    site_id: {
+      type: INTEGER,
+      notEmpty: true
+    },
+    deletedAt: {
+      type: DATE,
+      defaultValue: null
+    },
     domain: {
       type: STRING,
       notEmpty: true
