@@ -110,21 +110,26 @@ app.post('/api/v1/create', express.json(), async (req, res) => {
         wildcard
       } = body[i];
 
+      // make sure domain doesn't have protocol and is URL-like
+      const formattedDomain = await validateAndFormatDomain(domain);
       // not sure that greenlock.add and greenlock.manager.set are the same
-      const site = await greenlock.manager.set({
-        subject: domain,
-        altnames: [domain]
+      await greenlock.add({
+        subject: formattedDomain,
+        altnames: [formattedDomain]
       });
+      
 
       // TODO hopefully this isn't necessary
-      // const site = await models.site.findOne({
-      //   where: { servername: domain }
-      // });
+      const site = await models.site.findOne({
+        where: { servername: formattedDomain }
+      });
+
+      // console.log({ site });
 
       const [dbDomain] = await models.domain.findOrCreate({
-        where: { domain },
+        where: { formattedDomain },
         defaults: {
-          domain,
+          domain: formattedDomain,
           site_id: site.id
         }
       });
@@ -147,8 +152,9 @@ app.post('/api/v1/create', express.json(), async (req, res) => {
 
   if (errors.length > 0) {
     res.status(500).send(errors);
+  } else {
+    res.sendStatus(201);
   }
-  res.sendStatus(201);
 });
 
 
@@ -166,3 +172,25 @@ app.delete('/api/v1/redirects', express.json(), async (req, res) => {
 });
 
 module.exports = app;
+
+
+
+
+// utilities that don't have a home yet
+
+async function validateAndFormatDomain (domain) {
+  return new Promise((resolve, reject) => {
+    // Regex to check if string is a URL-like domain
+    const urlPattern = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/g;
+
+    // Check if domain is a valid URL-like domain
+    const domainMatch = domain.match(urlPattern);
+    if (domainMatch) {
+      // If domain contains protocol, remove it
+      resolve(domain.replace(/(http:\/\/|https:\/\/)/g, ''));
+    } else {
+      // If not a valid URL-like domain, return null or handle error as needed
+      reject(new Error({ message: `${domain} is not a valid URL-like domain.` }));
+    }
+  });
+}
