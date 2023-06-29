@@ -31,14 +31,13 @@ module.exports.create = function () {
 
   manager.set = async function (opts) {
     try {
-
       // Required: updated `renewAt` and `deletedAt` for certificate matching `subject`
       const [site] = await models.site.findOrCreate({
         where: {
-          servername: opts.domain
+          servername: opts.subject
         },
         defaults: {
-          servername: opts.domain,
+          servername: opts.subject,
           altnames: opts.altnames,
           deletedAt: opts.deletedAt,
           renewAt: opts.renewAt

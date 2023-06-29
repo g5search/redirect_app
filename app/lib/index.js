@@ -113,31 +113,30 @@ app.post('/api/v1/create', express.json(), async (req, res) => {
       // make sure domain doesn't have protocol and is URL-like
       const formattedDomain = await validateAndFormatDomain(domain);
       // not sure that greenlock.add and greenlock.manager.set are the same
-      await greenlock.add({
+      // await greenlock.add({
+      //   subject: formattedDomain,
+      //   servername: formattedDomain,
+      //   altnames: [formattedDomain]
+      // });
+
+      const site = await greenlock.manager.set({
         subject: formattedDomain,
         altnames: [formattedDomain]
       });
-
-      // const site = await greenlock.manager.set({
-      //   subject: domain,
-      //   altnames: [domain]
-      // });
       
-      const site = await models.site.findOne({
-        where: { servername: formattedDomain }
-      });
-
-      console.log({ site });
+      // const site = await models.site.findOne({
+      //   where: { servername: formattedDomain }
+      // });
 
       const [dbDomain] = await models.domain.findOrCreate({
-        where: { formattedDomain },
+        where: { domain: formattedDomain },
         defaults: {
           domain: formattedDomain,
           site_id: site.id
         }
       });
 
-      logger.info(dbDomain);
+      logger.info({ message: dbDomain });
 
       await models.redirect
         .create({
@@ -149,8 +148,8 @@ app.post('/api/v1/create', express.json(), async (req, res) => {
         });
     }
   } catch (error) {
-    logger.warn(error);
-    errors.push(error);
+    logger.warn({ message: error.message });
+    errors.push(error.mesage);
   }
 
   if (errors.length > 0) {
