@@ -115,18 +115,23 @@ app.post('/api/v1/create', express.json(), async (req, res) => {
       // not sure that greenlock.add and greenlock.manager.set are the same
       await greenlock.add({
         subject: formattedDomain,
-        servername: formattedDomain,
+        // servername: formattedDomain,
         altnames: [formattedDomain]
       });
 
-      const site = await greenlock.manager.set({
-        subject: formattedDomain,
-        altnames: [formattedDomain]
-      });
-      
-      // const site = await models.site.findOne({
-      //   where: { servername: formattedDomain }
+      // const site = await greenlock.manager.set({
+      //   subject: formattedDomain,
+      //   altnames: [formattedDomain]
       // });
+      
+      const site = await models.site.findOrCreate({
+        where: { servername: formattedDomain },
+        defaults: {
+          servername: formattedDomain,
+          altnames: [formattedDomain],
+          renewAt: 80
+        }
+      });
 
       const [dbDomain] = await models.domain.findOrCreate({
         where: { domain: formattedDomain },

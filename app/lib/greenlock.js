@@ -21,7 +21,7 @@ const truncate = (str) => {
 const greenlock = Greenlock.create({
   packageRoot,
   configDir: GREENLOCK_DIR,
-  manager: './app/lib/manager.js',
+  // manager: './app/lib/manager.js',
   packageAgent: `${pkg.name}/${pkg.version}`,
   maintainerEmail: GREENLOCK_MAINTAINER_EMAIL,
   notify: function (event, details) {
