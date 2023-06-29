@@ -30,20 +30,29 @@ module.exports.create = function () {
   };
 
   manager.set = async function (opts) {
-    // Required: updated `renewAt` and `deletedAt` for certificate matching `subject`
-    const [site] = await models.site.findOrCreate({
-      where: {
-        servername: opts.subject
-      },
-      defaults: {
-        servername: opts.subject,
+    try {
+
+      // Required: updated `renewAt` and `deletedAt` for certificate matching `subject`
+      const [site] = await models.site.findOrCreate({
+        where: {
+          servername: opts.domain
+        },
+        defaults: {
+          servername: opts.domain,
+          altnames: opts.altnames,
+          deletedAt: opts.deletedAt,
+          renewAt: opts.renewAt
+        }
+      });
+      await site.update({
         altnames: opts.altnames,
         deletedAt: opts.deletedAt,
         renewAt: opts.renewAt
-      }
-    });
-    await site.update({ altnames: opts.altnames, deletedAt: opts.deletedAt, renewAt: opts.renewAt });
-    return site;
+      });
+      return site;
+    } catch (error) {
+      throw error;
+    }
   };
 
   // this doesn't appear be used anywhere
