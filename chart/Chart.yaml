@@ -1,0 +1,12 @@
+apiVersion: v2
+appVersion: "1.1.0"
+description: A Helm chart for Kubernetes
+name: domain-forwarder
+version: 1.0.0
+dependencies:
+  # - name: node-web-service
+  #   version: "0.1.0"
+  #   repository: "@g5-multiverse-helm3-repositories"
+  - name: node-web-service
+    version: "0.1.0"
+    repository: "file://../../charts/node-web-service/"

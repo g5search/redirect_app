@@ -1,0 +1,6 @@
+dependencies:
+- name: node-web-service
+  repository: file://../../charts/node-web-service/
+  version: 0.1.0
+digest: sha256:69f184d91e43e687d46f370d86e175e2884a8d1c4789fd52130b05229f0db02a
+generated: "2023-05-18T14:30:39.182506-05:00"

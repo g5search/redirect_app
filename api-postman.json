@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "c6463eba-a6a6-4c93-bba6-9f48341c1a4d",
+		"name": "domain-forwarder (redirect_app)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3132940"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8085/api/v1/search?search=",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/api/v1/search?search=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"v1",
+						"search"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8085/api/v1/redirects",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"domain\": \"stratypus.com\",\n    \"path\": \"/\",\n    \"destination\": \"www.pcktbot.com\",\n    \"wildcard\": true\n  }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8085/api/v1/redirects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"v1",
+						"redirects"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

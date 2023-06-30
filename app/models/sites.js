@@ -1,4 +1,4 @@
-const { INTEGER, STRING, DATE, ARRAY, JSON } = require('sequelize')
+const { STRING, DATE, ARRAY, JSON } = require('sequelize');
 
 module.exports = sequelize => sequelize.define('site', {
   servername: {
@@ -21,4 +21,4 @@ module.exports = sequelize => sequelize.define('site', {
   }
 }, {
   paranoid: true
-})
+});

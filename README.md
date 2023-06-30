@@ -11,7 +11,7 @@ Domains, Paths and Destnations are stored in a Postgres database. By default if 
  1. A websever with a public IP **Greenlock will not work if you do not have this**
  2. SSH access to the web server
  3. Port 80 and 443 available on your websever
- 4. A Postres database and the credntials for it
+ 4. A Postres database and the credentials for it
 
 ### Step 1.
 SSH into the server and cd into the folder that you want the app to live in
@@ -21,21 +21,23 @@ clone down the git repo
 cd into the redirect app folder 
 >  cd redirect_app
 ### Step 4
-Set up your .env file in the redirect_app dir 
+Set up your `.env` file in the redirect_app dir 
 **Below are all of the env vars**
->DATABASE_MAX_CONNECTIONS =
->DATABASE_MIN_CONNECTIONS = 
->DATABASE_AQUIRE =
->DATABASE_IDLE =
->DATABASE_EVICT =
->DATABASE_URL =
->DATABASE_SSL =
->GREENLOCK_SERVER =
->GREENLOCK_DIR =
->GREENLOCK_EMAIL =
->GREENLOCK_AGREETOS =
->GREENLOCK_COMMUNITYMEMBER =
->GREENLOCK_DEBUG =
+
+```
+DATABASE_MAX_CONNECTIONS=
+DATABASE_MIN_CONNECTIONS= 
+DATABASE_AQUIRE=
+DATABASE_IDLE=
+DATABASE_EVICT=
+DATABASE_URL=
+DATABASE_SSL=
+GREENLOCK_DIR=
+GREENLOCK_MAINTAINER_EMAIL=
+GREENLOCK_AGREETOS=
+GREENLOCK_COMMUNITYMEMBER=
+GREENLOCK_DEBUG=
+```
 
 ### Step 5
 install the node modules 
@@ -51,12 +53,15 @@ Start the app with PM2
 
 ## Adding a new redirect
 ### Using `curl`
-`curl -X POST https://domain-forwarder.g5marketingcloud.com/api/v1/redirects \
+```
+curl -X POST https://domain-forwarder.g5marketingcloud.com/api/v1/redirects \
       -H 'Content-Type: application/json' \
-      -d '[{"domain":"www.g5devops.com","path":"/","destination":"runbook.g5marketingcloud.com","secure_destination":true,"wildcard":true}]'`
+      -d '[{"domain":"www.g5devops.com","path":"/","destination":"runbook.g5marketingcloud.com","secure_destination":true,"wildcard":true}]'
+```
+
 After pointing the domain at the server and running this curl command I did have to load the site on http once before it actually got a valid SSL cert but it's possible that was just timing and that I didn't need to go to http to 'trigger' it. Either way - if it's not picking up your addition, make sure the DNS is pointed to the right server and then go to the http version of the site you're redirecting away from. 
 
-As of right this commit the production redirect_app's DNS to point to is domain-forwarder.g5dns.com.
+As of right this commit the production redirect_app's DNS to point to is `domain-forwarder.g5dns.com`.
 If they're redirecting an apex/root domain and do not have a registrar that supports ALIASA or "cname flattening" then you will point to whatever IP the domain-forwarder.g5dns.com is pointed to (currently: 35.232.226.111) The "ALIASA" type thing is sometimes named differently between providers. It basically lets you point an A record to a named DNS record instead of requiring it to be to an IP address.
 
 ## Troubleshooting
@@ -68,6 +73,10 @@ If they're redirecting an apex/root domain and do not have a registrar that supp
  - Make sure that the domain_id is correct in the redirects table
     - The path should start with a "/"
  - Tail the logs 
-	 - >pm2 logs redirectApp
+	 - > pm2 logs redirectApp
    
+  helm upgrade --install --namespace=default domain-forwarder --set node-web-service.image.tag=prework-linting-ef4c045 --values=chart/opex-staging-values.yaml --set=deployer.user=david.miller ./chart/
 
+### Local Container Testing
+
+run `./docker_build.sh` to run in a local docker container with API and default http/https ports.
